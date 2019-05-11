@@ -1,0 +1,20 @@
+body {
+  font-family: 'Muli', sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+}
+.outer {
+  display: flex;
+  /* justify-content: center; */
+}
+.Floatdiv {
+  position: absolute;
+}
+#map {
+  height: 100vh;
+  width: 100vw;
+  border: solid #7199a5;
+}
+.Btndiv, #mouse-position {
+  margin-top: 5px;
+}
