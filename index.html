@@ -12,7 +12,7 @@
   <!-- Bootstrap's CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <!-- my css -->
-  <link rel="stylesheet" href="./css/map.css">
+  <link rel="stylesheet" href="./css/index.css">
 </head>
 
 <body>
@@ -20,16 +20,20 @@
   <div class="Outerdiv">
     <!-- map -->
     <div id="map"></div>
+
     <!-- GetMousePosition -->
-    <div class="Floatdiv">
-      <div id="mouse-position"></div>
-      <div class="Btndiv">
-        <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
-      </div>
-      <!-- Card -->
-      <div class="card">
-        <div class="card-body">
-          This is some text within a card body.
+    <div id="mouse-position"></div>
+
+    <!-- Clear Btn -->
+    <div class="Btndiv">
+      <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
+    </div>
+
+    <!-- Card -->
+    <div class="card">
+      <div class="card-body">
+        <div class="Sliderdiv">
+          <input type="range" class="custom-range" min="1" max="100" value="50" id="slidebar">
         </div>
       </div>
     </div>

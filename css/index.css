@@ -12,17 +12,20 @@ body {
   height: 100vh;
   width: 100vw;
 }
-.Floatdiv { /* ClearBtn & MousePosition & card */
+.Btndiv, #mouse-position, .card { /* ClearBtn & MousePosition & card */
   position: absolute;
   right: 10px;
 }
-.Btndiv, #mouse-position {
+#mouse-position {
   margin-top: 5px;
-  clear: both;
+  float: right;
+}
+.Btndiv {
+  margin-top: 30px;
   float: right;
 }
 .card {
-  margin: 10px 0px 0px 0px;
+  margin: 80px 0px 0px 0px;
   width: 400px;
   clear: both;
   float: right;

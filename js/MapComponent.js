@@ -4,14 +4,18 @@ class MapComponent {
     this.coorContainer = new Array();
     this.mousePositionControl = null;
     this.map = null;
+    this.bufferRadius = 50;
+    this.pointLayer = new ol.layer.Vector({});
+    this.lineLayer = new ol.layer.Vector({});
     this.pointStyle = [
       new ol.style.Style({
           image: new ol.style.Circle({
-              radius: 3,
+              radius: this.bufferRadius,
               stroke: new ol.style.Stroke({
-                  color: '#e1dee6'
+                  color: '#edeff7'
               })
-          })
+          }),
+          zIndex: 3
       }),
       new ol.style.Style({
           image: new ol.style.Icon(({
@@ -59,8 +63,8 @@ class MapComponent {
           new ol.layer.Tile({
             source: new ol.source.OSM()
           }),
-          new ol.layer.Vector({}), // Empty Layer for addLine
-          new ol.layer.Vector({})  // Empty Layer for addMarker
+          this.pointLayer, // Empty Layer for addMarker
+          this.lineLayer  // Empty Layer for addLine
         ],
         view: new ol.View({ // setView
           center: ol.proj.fromLonLat([125.9, 22.5]),
@@ -80,19 +84,7 @@ class MapComponent {
   addMarker () {
     this.coorContainer.push(this.getMousePosition());
     this.relocate(); // line first then points
-    if(this.coorContainer.length > 1){ // point numbers > 1 draw line
-      this.addLine();
-    }
-  }
-
-  // Add Line
-  addLine () {
-    let featureLine = new ol.Feature({ geometry: new ol.geom.LineString(this.coorContainer) });
-    featureLine.setStyle(this.lineStyle); // set style
-    let sourceLine = new ol.source.Vector({ features: [featureLine] });
-    let vectorLayer = new ol.layer.Vector({ source: sourceLine });
-
-    this.map.getLayers().getArray().splice(1,1,vectorLayer); // replace the previous one
+    this.addLine();
   }
 
   // Clear Pointer and Line
@@ -110,7 +102,7 @@ class MapComponent {
     return (ol.proj.fromLonLat([lng, lat]));
   }
 
-  // Relocate marker
+  // Relocate marker and add Buffer
   relocate () {
     let feature = this.coorContainer.slice();
     let coorCount = 0;
@@ -120,10 +112,33 @@ class MapComponent {
       coorCount++;
     }
     let source = new ol.source.Vector ({ features: feature });
-    let pointLayer = new ol.layer.Vector ({ source: source });
-    // this.map.getLayers().pop();
-    // this.map.addLayer(pointLayer);
-    this.map.getLayers().getArray().splice(2,1,pointLayer); // replace the previous one
+    this.pointLayer = new ol.layer.Vector ({ source: source });
+    this.map.getLayers().getArray().splice(1,1,this.pointLayer); // replace the previous one
     this.map.render();
+  }
+
+    // Add Line
+  addLine () {
+    let featureLine = new ol.Feature({ geometry: new ol.geom.LineString(this.coorContainer) });
+    featureLine.setStyle(this.lineStyle); // set style
+    let sourceLine = new ol.source.Vector({ features: [featureLine] });
+    this.lineLayer = new ol.layer.Vector({ source: sourceLine });
+    this.map.getLayers().getArray().splice(2,1,this.lineLayer); // replace the previous one
+    this.map.render();
+  }
+
+  // Change radius
+  radiusController (radius) {
+    this.bufferRadius = radius;
+    this.pointStyle[0] = new ol.style.Style({
+        image: new ol.style.Circle({
+            radius: this.bufferRadius,
+            stroke: new ol.style.Stroke({
+                color: '#edeff7'
+            })
+        }),
+        zIndex: 3
+    });
+    this.relocate();
   }
 }

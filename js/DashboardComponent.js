@@ -13,10 +13,14 @@ class DashboardComponent {
   mapInit () {
     this.map.render();
   }
-
-  // clearBtn onclick
+  // ClearBtn Onclick
   clearBtn () {
     this.map.removeMarker();
+  }
+  // Radius Slidebar
+  slideBar () {
+    let currentValue = $('#slidebar').val();
+    this.map.radiusController(currentValue);
   }
 
 }

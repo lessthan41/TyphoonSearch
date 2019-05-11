@@ -11,4 +11,8 @@ $(function () {
     dashboard.clearBtn();
   })
 
+  // Radius slidebar
+  $('#slidebar').on('input', function () {
+    dashboard.slideBar();
+  })
 });
