@@ -7,26 +7,33 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title></title>
 
-  <!-- import ol css -->
+  <!-- import ol -->
   <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
   <!-- Bootstrap's CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <!-- my css -->
   <link rel="stylesheet" href="./css/map.css">
-
 </head>
 
 <body>
-  <div class="outer">
+
+  <div class="Outerdiv">
     <!-- map -->
-    <div id="map" onclick=""></div>
+    <div id="map"></div>
+    <!-- GetMousePosition -->
     <div class="Floatdiv">
-      <!-- GetMousePosition -->
       <div id="mouse-position"></div>
       <div class="Btndiv">
-        <button type="button" class="btn btn-success" id=clearBtn>CLear</button>
+        <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
+      </div>
+      <!-- Card -->
+      <div class="card">
+        <div class="card-body">
+          This is some text within a card body.
+        </div>
       </div>
     </div>
+
   </div>
 
   <!--==================================

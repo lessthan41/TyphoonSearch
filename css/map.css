@@ -3,18 +3,28 @@ body {
   font-size: 14px;
   line-height: 16px;
 }
-.outer {
+.Outerdiv{ /* 框架 */
   display: flex;
-  /* justify-content: center; */
-}
-.Floatdiv {
-  position: absolute;
+  height: 100vh;
+  width: 100vw;
 }
 #map {
   height: 100vh;
   width: 100vw;
-  border: solid #7199a5;
+}
+.Floatdiv { /* ClearBtn & MousePosition & card */
+  position: absolute;
+  right: 10px;
 }
 .Btndiv, #mouse-position {
   margin-top: 5px;
+  clear: both;
+  float: right;
+}
+.card {
+  margin: 10px 0px 0px 0px;
+  width: 400px;
+  clear: both;
+  float: right;
+  box-shadow: 1px 1px 5px #728e97;
 }
