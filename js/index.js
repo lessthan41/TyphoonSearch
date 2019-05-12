@@ -5,14 +5,5 @@ $(function () {
 
   // dashboard init
   dashboard.init();
-
-  // clearBtn onclick
-  $('#clearBtn').on('click', function () {
-    dashboard.clearBtn();
-  })
-
-  // Radius slidebar
-  $('#slidebar').on('input', function () {
-    dashboard.slideBar();
-  })
+  
 });
