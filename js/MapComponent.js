@@ -2,7 +2,7 @@ class MapComponent {
   constructor (data) {
     this.data = data;
     this.coorContainer = new Array();
-    this.radiusContainer = new Array(); // for fixed radius
+    this.fixRadiusContainer = new Array(); // for fixed radius
     this.mousePositionControl = null;
     this.map = null;
     this.bufferRadius = 50 * 1000; // default 50 km
@@ -89,17 +89,20 @@ class MapComponent {
 
   // Add pointer
   addMarker () {
-    this.coorContainer.push( ol.proj.fromLonLat(this.getMousePosition()) );
-    this.addBuffer();
-    this.addLine();
-    this.addPoint();
-    this.addFixBuffer();
+    setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
+      this.coorContainer.push( ol.proj.fromLonLat(this.getMousePosition()) );
+      console.log(this.coorContainer);
+      this.addBuffer();
+      this.addLine();
+      this.addPoint();
+      this.addFixBuffer();
+    }, 10);
   }
 
   // Clear Pointer and Line
   removeMarker () {
     this.coorContainer = [];
-    this.radiusContainer = [];
+    this.fixRadiusContainer = [];
     this.addBuffer();
     this.addLine();
     this.addPoint();
@@ -165,9 +168,9 @@ class MapComponent {
     center.pop(); // pop the newest point
 
     if(coorLength >= 2){ // setting feature is needed only when points >= 2
-      this.radiusContainer.push(this.bufferRadius);
+      this.fixRadiusContainer.push(this.bufferRadius);
       for(var i=0; i<coorLength-1; i++){
-        fixBufferArray[i] = new ol.Feature({ geometry: new ol.geom.Circle(center[i], this.radiusContainer[i]) });
+        fixBufferArray[i] = new ol.Feature({ geometry: new ol.geom.Circle(center[i], this.fixRadiusContainer[i]) });
         fixBufferArray[i].setStyle(this.bufferStyle);
       }
     }
@@ -183,5 +186,4 @@ class MapComponent {
     this.bufferRadius = radius * 1000; // km
     this.addBuffer();
   }
-
 }

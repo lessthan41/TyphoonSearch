@@ -47,9 +47,11 @@ class DashboardComponent {
       if(evt.dragging){
         return;
       }
-      coor = this.map.getMousePosition();
-      rowCount = this.map.coorContainer.length;
-      this.card.showPointsOnCard(coor, rowCount);
+      setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
+        coor = this.map.getMousePosition();
+        rowCount = this.map.coorContainer.length;
+        this.card.showPointsOnCard(coor, rowCount);
+      }, 10);
     });
   }
 
