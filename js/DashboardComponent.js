@@ -1,3 +1,9 @@
+
+/**
+* Init Dashboard Component
+* Component Event Handler
+*/
+
 class DashboardComponent {
   constructor (data) {
     this.data = data;
@@ -8,12 +14,12 @@ class DashboardComponent {
   init () {
     this.mapInit();
     this.cardInit();
-    this.clearBtn();
-    this.slideBar();
-    this.showPointsOnCard();
+    this.clearBtnOnClick();
+    this.slideBarOnInput();
+    this.mapOnClick();
   }
 
-  // Map init
+  // init
   mapInit () {
     this.map.render();
   }
@@ -22,15 +28,15 @@ class DashboardComponent {
   }
 
   // ClearBtn Onclick
-  clearBtn () {
+  clearBtnOnClick () {
     $('#clearBtn').on('click', () => {
       this.map.removeMarker();
       this.card.removeTr();
     })
   }
 
-  // Slidebar On input
-  slideBar () {
+  // Slidebar Oninput
+  slideBarOnInput () {
     let currentValue;
     $('#slidebar').on('input', () => {
       currentValue = $('#slidebar').val();
@@ -39,18 +45,19 @@ class DashboardComponent {
     });
   }
 
-  // Link Map with Table
-  showPointsOnCard () {
+  // Map Onclick
+  mapOnClick () {
     let coor;
     let rowCount;
     this.map.map.on('click', (evt) => {
-      if(evt.dragging){
-        return;
-      }
       setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
+        if(evt.dragging){
+          return;
+        }
         coor = this.map.getMousePosition();
         rowCount = this.map.coorContainer.length;
         this.card.showPointsOnCard(coor, rowCount);
+        this.map.addMarker();
       }, 10);
     });
   }

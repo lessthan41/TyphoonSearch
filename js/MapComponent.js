@@ -78,13 +78,6 @@ class MapComponent {
           zoom: 7
         })
       });
-      // Map Onclick add Marker
-      this.map.on('click', (evt) => { // due to callback problem need arrow function
-        if (evt.dragging) {
-          return;
-        }
-        this.addMarker();
-      });
   }
 
   // Add pointer
@@ -145,7 +138,7 @@ class MapComponent {
     this.map.render();
   }
 
-  // Add Buffer
+  // Add Changable Buffer
   addBuffer () { // km
     let coorLength = this.coorContainer.length;
     let thing = coorLength == 0 ? [] : this.coorContainer[coorLength-1]; // prevent error
