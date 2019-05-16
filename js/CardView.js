@@ -12,14 +12,22 @@ class CardView {
 
   }
 
-  slidebarValue (value) {
+  trRadiusControl (value) {
     $('#slidebarvalue').html(value);
     if( $('#tBody tr').length != 0){ // if table have row
       $('#tBody td:last').html(value + 'km'); // changing last td namely radius
     }
   }
 
-  showPointsOnCard (coor, rowCount) {
+  slidebarMinValueControl (mapHaveClicked) {
+    if(!mapHaveClicked){ // Map on First Click no need to Function
+      return;
+    }
+    $('#slidebar').attr('min', $('#slidebar').val());
+    // console.log('NotFirstClick');
+  }
+
+  addTr (coor, rowCount) {
 
     coor[0] = Math.round(coor[0]*100)/100;
     coor[1] = Math.round(coor[1]*100)/100;
@@ -36,8 +44,11 @@ class CardView {
     this.tableRowCount++;
   }
 
-  removeTr () {
+  removeRecord (initial) {
     this.tableRowCount = 1;
     $('#tBody tr').remove();
+    $('#slidebar').attr('min', 0);
+    $('#slidebar').val(initial);
+    $('#slidebarvalue').html(initial);
   }
 }

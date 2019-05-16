@@ -84,7 +84,6 @@ class MapComponent {
   addMarker () {
     setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
       this.coorContainer.push( ol.proj.fromLonLat(this.getMousePosition()) );
-      console.log(this.coorContainer);
       this.addBuffer();
       this.addLine();
       this.addPoint();

@@ -9,6 +9,7 @@ class DashboardComponent {
     this.data = data;
     this.map = new MapComponent(this.data);
     this.card = new CardView(this.data);
+    this.mapHaveClicked = false; // true: Map has been Clicked at least once
   }
 
   init () {
@@ -30,8 +31,11 @@ class DashboardComponent {
   // ClearBtn Onclick
   clearBtnOnClick () {
     $('#clearBtn').on('click', () => {
+      let initial = 50;
+      this.mapHaveClicked = false;
       this.map.removeMarker();
-      this.card.removeTr();
+      this.card.removeRecord(initial);
+      this.map.radiusController(initial);
     })
   }
 
@@ -41,7 +45,7 @@ class DashboardComponent {
     $('#slidebar').on('input', () => {
       currentValue = $('#slidebar').val();
       this.map.radiusController(currentValue);
-      this.card.slidebarValue(currentValue); // change slidebar display value
+      this.card.trRadiusControl(currentValue); // change slidebar display value
     });
   }
 
@@ -56,8 +60,10 @@ class DashboardComponent {
         }
         coor = this.map.getMousePosition();
         rowCount = this.map.coorContainer.length;
-        this.card.showPointsOnCard(coor, rowCount);
+        this.card.addTr(coor, rowCount);
         this.map.addMarker();
+        this.card.slidebarMinValueControl(this.mapHaveClicked);
+        this.mapHaveClicked = true;
       }, 10);
     });
   }

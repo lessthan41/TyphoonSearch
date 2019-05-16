@@ -3,16 +3,22 @@ body {
   font-size: 14px;
   line-height: 16px;
 }
-.Outerdiv{ /* 框架 */
+
+/* 框架 */
+.Outerdiv{
   display: flex;
   height: 100vh;
   width: 100vw;
 }
+
+/* Map */
 #map {
   height: 100vh;
   width: 100vw;
 }
-.Btndiv, #mouse-position, .card { /* ClearBtn & MousePosition & card */
+
+/* ClearBtn & MousePosition */
+.Btndiv, #mouse-position, .card {
   position: absolute;
   right: 10px;
 }
@@ -29,6 +35,8 @@ body {
   left: 10px;
   bottom: 10px;
 }
+
+/* Card */
 .card {
   margin: 80px 0px 0px 0px;
   width: 400px;
@@ -36,9 +44,16 @@ body {
   float: right;
   box-shadow: 1px 1px 5px #728e97;
 }
+
+/* Slide bar */
+.Sliderdiv {
+  padding: 5px;
+}
 #slidebartext {
   margin-bottom: 5px;
 }
+
+/* Table */
 .tablediv {
   text-align: center;
   padding: 10px;
