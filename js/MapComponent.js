@@ -1,6 +1,9 @@
+/**
+* Init Map Component
+* Map Marker Functions
+*/
 class MapComponent {
-  constructor (data) {
-    this.data = data;
+  constructor () {
     this.coorContainer = new Array();
     this.fixRadiusContainer = new Array(); // for fixed radius
     this.mousePositionControl = null;
@@ -51,7 +54,6 @@ class MapComponent {
   init () {
     this.mousePositionControl = new ol.control.MousePosition({
       coordinateFormat: ol.coordinate.createStringXY(4),
-      projection: 'EPSG:4326',
       className: 'custom-mouse-position',
       target: document.getElementById('mouse-position'),
       undefinedHTML: '&nbsp;'
@@ -69,11 +71,10 @@ class MapComponent {
           }),
           this.pointLayer, // Empty Layer for addMarker
           this.lineLayer,  // Empty Layer for addLine
-          this.fixBufferLayer,
+          this.fixBufferLayer, // Enpty Layer for FixedBuffer
           this.bufferLayer // Enpty Layer for addBuffer
         ],
         view: new ol.View({ // setView
-          projection: 'EPSG:3857',
           center: ol.proj.fromLonLat([125.9, 22.5]),
           zoom: 7
         })
@@ -83,10 +84,10 @@ class MapComponent {
   // Add pointer
   addMarker () {
     setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
-      this.coorContainer.push( ol.proj.fromLonLat(this.getMousePosition()) );
-      this.addBuffer();
-      this.addLine();
+      this.coorContainer.push( this.getMousePosition() );
       this.addPoint();
+      this.addLine();
+      this.addBuffer();
       this.addFixBuffer();
     }, 10);
   }
@@ -104,9 +105,9 @@ class MapComponent {
   // Get Coordinate and Return lat lng
   getMousePosition () {
     let currentPosition = $('#mouse-position').text();
-    let lng = parseFloat(currentPosition.substring(0, 8));
-    let lat = parseFloat(currentPosition.substring(10));
-    return ([lng, lat]);
+    let lng = parseFloat(currentPosition.substring(0, 15));
+    let lat = parseFloat(currentPosition.substring(15));
+    return [lng, lat];
   }
 
   // Add Point
@@ -138,10 +139,11 @@ class MapComponent {
   }
 
   // Add Changable Buffer
-  addBuffer () { // km
+  addBuffer () {
     let coorLength = this.coorContainer.length;
-    let thing = coorLength == 0 ? [] : this.coorContainer[coorLength-1]; // prevent error
-    let buffer = new ol.Feature({ geometry: new ol.geom.Circle(thing, this.bufferRadius) }); // the newest point
+    let center = coorLength == 0 ? [] : this.coorContainer[coorLength-1]; // Prevent error
+    let radius = this.radiusCorrection(center, this.bufferRadius); // Radius Correction
+    let buffer = new ol.Feature({ geometry: new ol.geom.Circle(center, radius) }); // the newest point
     let sourceBuffer;
 
     buffer.setStyle(this.bufferStyle);
@@ -162,7 +164,8 @@ class MapComponent {
     if(coorLength >= 2){ // setting feature is needed only when points >= 2
       this.fixRadiusContainer.push(this.bufferRadius);
       for(var i=0; i<coorLength-1; i++){
-        fixBufferArray[i] = new ol.Feature({ geometry: new ol.geom.Circle(center[i], this.fixRadiusContainer[i]) });
+        let radius = this.radiusCorrection(center[i], this.fixRadiusContainer[i]); // Radius Correction
+        fixBufferArray[i] = new ol.Feature({ geometry: new ol.geom.Circle(center[i], radius) });
         fixBufferArray[i].setStyle(this.bufferStyle);
       }
     }
@@ -175,7 +178,21 @@ class MapComponent {
 
   // Change radius
   radiusController (radius) {
-    this.bufferRadius = radius * 1000; // km
+    this.bufferRadius = radius * 1000; // km to m
     this.addBuffer();
   }
+
+  // Convert Radius (m) into value to input
+  radiusCorrection (center, radius) {
+
+    let edgeCoordinate = [center[0] + radius, center[1]];
+    let wgs84Sphere = new ol.Sphere(6378137);
+    let groundRadius = wgs84Sphere.haversineDistance(
+        ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326'),
+        ol.proj.transform(edgeCoordinate, 'EPSG:3857', 'EPSG:4326')
+    );
+
+    return radius/groundRadius * radius; // Ratio * radius
+  }
+
 }

@@ -1,12 +1,9 @@
-
 /**
 * Init Dashboard Component
-* Component Event Handler
+* Dashboard Component Event Handler
 */
-
 class DashboardComponent {
-  constructor (data) {
-    this.data = data;
+  constructor () {
     this.map = new MapComponent(this.data);
     this.card = new CardView(this.data);
     this.mapHaveClicked = false; // true: Map has been Clicked at least once

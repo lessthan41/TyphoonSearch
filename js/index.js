@@ -1,13 +1,10 @@
-
 /**
 * Data Acqired
-* Call Dashboard
+* Dashboard Init
 */
-
 $(function () {
-  var data = 123;
-  var dashboard = new DashboardComponent(data);
-
+  var dashboard = new DashboardComponent();
+  
   // dashboard init
   dashboard.init();
 

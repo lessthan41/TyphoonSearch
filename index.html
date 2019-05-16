@@ -25,7 +25,7 @@
     <div id="mouse-position"></div>
 
     <!-- Clear Btn -->
-    <div class="Btndiv">
+    <div id=clearDiv>
       <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
     </div>
 
@@ -50,10 +50,13 @@
             </tbody>
           </table>
         </div>
+        <div id=queryDiv>
+          <button type="button" class="btn btn-primary" id=queryBtn>Query</button>
+        </div>
       </div>
     </div>
     <!-- Proj info -->
-    <div id=detail>EPSG: 4326</div>
+    <div id=detail>EPSG: 3857</div>
   </div>
 
   <!--==================================
@@ -77,6 +80,7 @@
   <script type="text/javascript" src="./js/DashboardComponent.js"></script>
   <script type="text/javascript" src="./js/CardView.js"></script>
   <script type="text/javascript" src="./js/index.js"></script>
+  <script type="text/javascript" src="./js/request.js"></script>
 </body>
 
 </html>

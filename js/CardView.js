@@ -1,6 +1,9 @@
+/**
+* Deal with Card Component
+*
+*/
 class CardView {
-  constructor (data) {
-    this.data = data;
+  constructor () {
     this.tableRowCount = 1;
   }
 
@@ -8,9 +11,7 @@ class CardView {
     this.init();
   }
 
-  init () {
-
-  }
+  init () {}
 
   trRadiusControl (value) {
     $('#slidebarvalue').html(value);
@@ -29,8 +30,9 @@ class CardView {
 
   addTr (coor, rowCount) {
 
-    coor[0] = Math.round(coor[0]*100)/100;
-    coor[1] = Math.round(coor[1]*100)/100;
+    coor = ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
+    coor[0] = Math.round(coor[0]*1000)/1000;
+    coor[1] = Math.round(coor[1]*1000)/1000;
     $('#tBody')
       .append($('<tr>')
         .append($('<td>')
@@ -47,7 +49,7 @@ class CardView {
   removeRecord (initial) {
     this.tableRowCount = 1;
     $('#tBody tr').remove();
-    $('#slidebar').attr('min', 0);
+    $('#slidebar').attr('min', 1);
     $('#slidebar').val(initial);
     $('#slidebarvalue').html(initial);
   }
