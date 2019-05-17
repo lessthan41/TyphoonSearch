@@ -7,12 +7,6 @@ class CardView {
     this.tableRowCount = 1;
   }
 
-  render () {
-    this.init();
-  }
-
-  init () {}
-
   trRadiusControl (value) {
     $('#slidebarvalue').html(value);
     if( $('#tBody tr').length != 0){ // if table have row

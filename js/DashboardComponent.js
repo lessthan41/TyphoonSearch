@@ -4,25 +4,23 @@
 */
 class DashboardComponent {
   constructor () {
-    this.map = new MapComponent(this.data);
-    this.card = new CardView(this.data);
-    this.mapHaveClicked = false; // true: Map has been Clicked at least once
+    this.map = new MapComponent();
+    this.card = new CardView();
+    this.query = new Request();
+    this.mapHaveClicked = false; // for control Slidebar min
   }
 
   init () {
     this.mapInit();
-    this.cardInit();
     this.clearBtnOnClick();
     this.slideBarOnInput();
     this.mapOnClick();
+    this.queryOnClick();
   }
 
   // init
   mapInit () {
     this.map.render();
-  }
-  cardInit () {
-    this.card.render()
   }
 
   // ClearBtn Onclick
@@ -62,6 +60,15 @@ class DashboardComponent {
         this.card.slidebarMinValueControl(this.mapHaveClicked);
         this.mapHaveClicked = true;
       }, 10);
+    });
+  }
+
+  queryOnClick () {
+    $('#queryBtn').on('click', () => {
+      console.log('Start Query');
+
+
+
     });
   }
 

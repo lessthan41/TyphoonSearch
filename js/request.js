@@ -6,21 +6,26 @@ class Request {
   constructor () {
   }
 
-  init () {
+  get(url) { //load data via ajax
+    $.ajax({
+      method: 'GET',
+      url: url,
+      dataType: "json",
+      success: function(get) {
+        console.log(get);
+      }
+    });
   }
 
-  loadEvent() { //load data via ajax
-    // var url_load = "https://pmdiana.hcilab.katrina.tw/event";
-    // $.ajax({
-    //   url: url_load,
-    //   dataType: "json",
-    //   success: function(items) {
-    //     // console.log(123);
-    //     //console.log(items);
-    //     event(items);
-    //   }
-    // });
+  post(url) { //load data via ajax
+    $.ajax({
+      method: 'POST',
+      url: url,
+      dataType: "json",
+      success: function(post) {
+        console.log(success);
+      }
+    });
   }
-
 
 }

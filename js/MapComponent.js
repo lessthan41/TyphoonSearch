@@ -29,7 +29,7 @@ class MapComponent {
     this.lineStyle = [
       new ol.style.Style({
         stroke: new ol.style.Stroke({
-          color: '#edeff7',
+          color: '#160d66',
           width: 2
         })
       })
@@ -49,6 +49,7 @@ class MapComponent {
 
   render () {
     this.init();
+    // this.test();
   }
 
   init () {
@@ -85,10 +86,10 @@ class MapComponent {
   addMarker () {
     setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
       this.coorContainer.push( this.getMousePosition() );
-      this.addPoint();
-      this.addLine();
-      this.addBuffer();
-      this.addFixBuffer();
+      this.addPoint(this.coorContainer);
+      this.addLine(this.coorContainer);
+      this.addBuffer(this.coorContainer);
+      this.addFixBuffer(this.coorContainer);
     }, 10);
   }
 
@@ -96,27 +97,27 @@ class MapComponent {
   removeMarker () {
     this.coorContainer = [];
     this.fixRadiusContainer = [];
-    this.addBuffer();
-    this.addLine();
-    this.addPoint();
-    this.addFixBuffer();
+    this.addBuffer(this.coorContainer);
+    this.addLine(this.coorContainer);
+    this.addPoint(this.coorContainer);
+    this.addFixBuffer(this.coorContainer);
   }
 
-  // Get Coordinate and Return lat lng
+  // Get Coordinate and Return [x, y](m)
   getMousePosition () {
     let currentPosition = $('#mouse-position').text();
-    let lng = parseFloat(currentPosition.substring(0, 15));
-    let lat = parseFloat(currentPosition.substring(15));
-    return [lng, lat];
+    let x = parseFloat(currentPosition.substring(0, 15));
+    let y = parseFloat(currentPosition.substring(15));
+    return [x, y];
   }
 
   // Add Point
-  addPoint () {
+  addPoint (coor) {
     let featureArray = new Array();
     let source;
 
-    for(var i=0; i<this.coorContainer.length; i++) { // for i in coorContainer add Feature and set style
-      featureArray[i] = new ol.Feature({ geometry: new ol.geom.Point(this.coorContainer[i]) });
+    for(var i=0; i<coor.length; i++) { // for i in coor add Feature and set style
+      featureArray[i] = new ol.Feature({ geometry: new ol.geom.Point(coor[i]) });
       featureArray[i].setStyle(this.pointStyle);
     }
 
@@ -127,9 +128,9 @@ class MapComponent {
   }
 
   // Add Line
-  addLine () {
+  addLine (coor) {
     let sourceLine;
-    let featureLine = new ol.Feature({ geometry: new ol.geom.LineString(this.coorContainer) });
+    let featureLine = new ol.Feature({ geometry: new ol.geom.LineString(coor) });
 
     featureLine.setStyle(this.lineStyle); // set style
     sourceLine = new ol.source.Vector({ features: [featureLine] });
@@ -139,9 +140,9 @@ class MapComponent {
   }
 
   // Add Changable Buffer
-  addBuffer () {
-    let coorLength = this.coorContainer.length;
-    let center = coorLength == 0 ? [] : this.coorContainer[coorLength-1]; // Prevent error
+  addBuffer (coor) {
+    let coorLength = coor.length;
+    let center = coorLength == 0 ? [] : coor[coorLength-1]; // Prevent error
     let radius = this.radiusCorrection(center, this.bufferRadius); // Radius Correction
     let buffer = new ol.Feature({ geometry: new ol.geom.Circle(center, radius) }); // the newest point
     let sourceBuffer;
@@ -154,9 +155,9 @@ class MapComponent {
   }
 
   // Add Fixed Buffer
-  addFixBuffer () {
-    let coorLength = this.coorContainer.length;
-    let center = this.coorContainer.slice();
+  addFixBuffer (coor) {
+    let coorLength = coor.length;
+    let center = coor.slice();
     let fixBufferArray = new Array();
     let sourceBuffer;
     center.pop(); // pop the newest point
@@ -179,10 +180,10 @@ class MapComponent {
   // Change radius
   radiusController (radius) {
     this.bufferRadius = radius * 1000; // km to m
-    this.addBuffer();
+    this.addBuffer(this.coorContainer);
   }
 
-  // Convert Radius (m) into value to input
+  // Convert Radius Wanted(m) into value to input
   radiusCorrection (center, radius) {
 
     let edgeCoordinate = [center[0] + radius, center[1]];
@@ -193,6 +194,25 @@ class MapComponent {
     );
 
     return radius/groundRadius * radius; // Ratio * radius
+  }
+
+  test () {
+    let coor = new Array;
+    let coorContainer = new Array;
+    let data = {};
+    let count = 0;
+    for(var i in data){
+      for(var j in data[i]['points']){
+        count++;
+        coor = [data[i]['points'][j]['longitude'],data[i]['points'][j]['latitude']];
+        // console.log(coor);
+        coor = ol.proj.fromLonLat(coor);
+        coorContainer.push(coor);
+      }
+    }
+    // console.log(count);
+    this.addPoint(coorContainer);
+    this.addLine(coorContainer);
   }
 
 }
