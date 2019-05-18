@@ -10,20 +10,16 @@ class CardView {
   trRadiusControl (value) {
     $('#slidebarvalue').html(value);
     if( $('#tBody tr').length != 0){ // if table have row
-      $('#tBody td:last').html(value + 'km'); // changing last td namely radius
+      $('#tBody td:last').html(value + 'km'); // changing last td(newest radius)
     }
   }
 
   slidebarMinValueControl (mapHaveClicked) {
-    if(!mapHaveClicked){ // Map on First Click no need to Function
-      return;
-    }
+    if(!mapHaveClicked){ return; } // Map on First Click no need to Function
     $('#slidebar').attr('min', $('#slidebar').val());
-    // console.log('NotFirstClick');
   }
 
   addTr (coor, rowCount) {
-
     coor = ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
     coor[0] = Math.round(coor[0]*1000)/1000;
     coor[1] = Math.round(coor[1]*1000)/1000;

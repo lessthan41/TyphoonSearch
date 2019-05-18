@@ -25,8 +25,8 @@ class DashboardComponent {
 
   // ClearBtn Onclick
   clearBtnOnClick () {
+    let initial = 50;
     $('#clearBtn').on('click', () => {
-      let initial = 50;
       this.mapHaveClicked = false;
       this.map.removeMarker();
       this.card.removeRecord(initial);
@@ -50,25 +50,29 @@ class DashboardComponent {
     let rowCount;
     this.map.map.on('click', (evt) => {
       setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
-        if(evt.dragging){
-          return;
-        }
+        if (evt.dragging) { return; } // Dragging event Return
         coor = this.map.getMousePosition();
+        if (isNaN(coor[0])) { return; } // Prevent Error
         rowCount = this.map.coorContainer.length;
-        this.card.addTr(coor, rowCount);
         this.map.addMarker();
+        this.card.addTr(coor, rowCount);
         this.card.slidebarMinValueControl(this.mapHaveClicked);
         this.mapHaveClicked = true;
       }, 10);
     });
   }
 
+  // QueryBtn Onclick
   queryOnClick () {
+    let toPOST, coor, radius, toGET;
     $('#queryBtn').on('click', () => {
-      console.log('Start Query');
-
-
-
+      coor = this.map.coorContainer;
+      radius = this.map.fixRadiusContainer;
+      radius.push(this.map.bufferRadius);
+      toPOST = this.query.wrap(coor, radius);
+      console.log(toPOST);
+      this.map.plotData();
+      // this.query.post(toPOST, );
     });
   }
 
