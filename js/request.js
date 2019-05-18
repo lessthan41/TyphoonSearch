@@ -6,7 +6,8 @@ class Request {
   constructor () {
   }
 
-  get(url) { // load data via ajax
+  // load data via ajax
+  get(url) {
     $.ajax({
       method: 'GET',
       url: url,
@@ -17,22 +18,32 @@ class Request {
     });
   }
 
-  post(toPOST, url) { // post data via ajax
+  // post data via ajax
+  post(toPOST, url) {
     $.ajax({
       method: 'POST',
       url: url,
-      data: toPOST,
+      data: JSON.stringify(toPOST),
       dataType: 'json',
-      success: function(post) {
-        console.log(post);
-      }
-    });
+      contentType: "application/json; charset=utf-8"
+    })
+    .done(function(data) {
+          // do stuff here
+          console.log('success');
+      })
+      .fail(function(err) {
+          // do stuff here
+          console.log('failed');
+      });
   }
 
   // LonLat to LatLon, to JSON
   wrap (coor, radius) {
     let ret = { points: {}, parameter: {}};
     let coorContainer = new Array();
+    let w = $('#wInput').val();
+    let month = $('#mInput').val();
+    let n = $('#nInput').val();
 
     for(var i in coor) { // From xy to LonLat
       coorContainer.push(ol.proj.toLonLat(coor[i]));
@@ -43,19 +54,66 @@ class Request {
 
     for(var i=0; i<coorContainer.length; i++){ // Points
       ret['points']['point'+ (i+1)] = {
-        lontitude: coorContainer[i][0],
+        longtitude: coorContainer[i][0],
         latitude: coorContainer[i][1],
         radius: radius[i]
       };
     };
 
-    ret['parameter']['w'] = '';
-    ret['parameter']['month'] = 0;
-    ret['parameter']['n'] = 10;
+
+    ret['parameter']['w'] = w;
+    ret['parameter']['month'] = month;
+    ret['parameter']['n'] = n;
 
 
     // console.log(ret);
     return ret;
+  }
+
+  postCheck () {
+    let wboolean = true;
+    let nboolean = true;
+    let mboolean = true;
+    let w = $('#wInput').val();
+    let n = $('#nInput').val();
+    let month = $('#mInput').val();
+
+    $('#wSmall').css('visibility', 'hidden');
+    $('#nSmall').css('visibility', 'hidden');
+    $('#mSmall').css('visibility', 'hidden');
+
+    if(w != '') { // Examine w
+      w = parseFloat(w);
+      if(isNaN(w)) {
+        $('#wSmall').css('visibility', 'visible');
+        wboolean = false;
+      };
+    };
+
+    if(n != '') { // Examine n
+      n = parseFloat(n);
+      if(isNaN(n) || !Number.isInteger(n)) {
+        $('#nSmall').css('visibility', 'visible');
+        nboolean = false;
+      };
+    };
+
+    if(month != '') { // Examine n
+      month = parseFloat(month);
+      if(isNaN(month) || !Number.isInteger(month)) {
+        $('#mSmall').css('visibility', 'visible');
+        mboolean = false;
+      };
+      if(month <= 0 || month >= 13){
+        $('#mSmall').css('visibility', 'visible');
+        mboolean = false;
+      }
+    };
+
+    if(wboolean && nboolean && mboolean){
+      return true;
+    }
+    return false;
   }
 
 }

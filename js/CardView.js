@@ -43,4 +43,24 @@ class CardView {
     $('#slidebar').val(initial);
     $('#slidebarvalue').html(initial);
   }
+
+  // Tr warning
+  showWarning () {
+    $('#maxpoints').css('visibility', 'visible');
+  }
+
+  hideWarning () {
+    $('#maxpoints').css('visibility', 'hidden');
+  }
+
+  clearInput () {
+    $('#wInput').val('');
+    $('#nInput').val('');
+    $('#mInput').val('');
+    $('#wSmall').css('visibility', 'hidden');
+    $('#nSmall').css('visibility', 'hidden');
+    $('#mSmall').css('visibility', 'hidden');
+  }
+
+
 }

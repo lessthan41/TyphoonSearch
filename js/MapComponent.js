@@ -207,7 +207,6 @@ class MapComponent {
 
     dataLength = Object.keys(coor).length;
     this.lineDataLayerCount = dataLength;
-
     for(var i=0; i<dataLength; i++) {
       this.map.getLayers().getArray().splice(5,0,this.lineDataLayer[i]); // Add Layer at the last of the layer
     }

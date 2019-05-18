@@ -36,6 +36,7 @@
           <div id=slidebartext>Buffer Radius : <span id=slidebarvalue>50</span> km</div>
           <input type="range" class="custom-range" min="1" max="300" value="50" id="slidebar">
         </div>
+        <!----------------------------------------------------->
         <div class="tablediv">
           <table class="table">
             <thead>
@@ -50,6 +51,28 @@
             </tbody>
           </table>
         </div>
+        <div id=maxpoints>
+          Reach Max Points Number Limit.
+        </div>
+        <!----------------------------------------------------->
+        <form id=form>
+          <small id="wSmall" class="form-text text-muted">Index should be a number.</small>
+          <div class="form-group">
+            <label id=wtitle>Time Weighted Index :</label>
+            <input class="form-control" id="wInput" placeholder="default value 1.0">
+          </div>
+          <small id="nSmall" class="form-text text-muted">Index should be a integer.</small>
+          <div class="form-group">
+            <label id=ntitle>Number to Search :</label>
+            <input class="form-control" id="nInput" placeholder="default / max value 10">
+          </div>
+          <small id="mSmall" class="form-text text-muted">Month should be a integer in 1~12.</small>
+          <div class="form-group">
+            <label id=mtitle>Month :</label>
+            <input class="form-control" id="mInput" placeholder="default this month 1~12">
+          </div>
+        </form>
+        <!----------------------------------------------------->
         <div id=queryDiv>
           <button type="button" class="btn btn-primary" id=queryBtn>Query</button>
         </div>

@@ -39,6 +39,7 @@ body {
 /* Card */
 .card {
   margin: 80px 0px 0px 0px;
+  padding-bottom: 0px;
   width: 400px;
   clear: both;
   float: right;
@@ -56,7 +57,42 @@ body {
 /* Table */
 .tablediv {
   text-align: center;
-  padding: 10px 10px 0px 10px;
+  padding: 5px 0px 0px 0px;
+}
+.table {
+  margin-bottom: unset;
+}
+#maxpoints {
+  padding: 0px 5px 2px 5px;
+  text-align: right;
+  color: red;
+  visibility: hidden;
+}
+
+/* Input */
+#form {
+  margin-bottom: 10px;
+}
+.form-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: unset;
+}
+#wtitle, #ntitle, #mtitle { /* vertical center */
+  height: 25px;
+  line-height: 29px;
+  text-align: right;
+  margin-right: 10px;
+}
+#wInput, #nInput, #mInput {
+  width: 200px;
+  height: 30px;
+}
+#wSmall, #nSmall, #mSmall {
+  margin-top: unset;
+  text-align: right;
+  padding-right: 16px;
+  visibility: hidden;
 }
 
 /* Query Btn */

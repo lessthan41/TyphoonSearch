@@ -28,6 +28,8 @@ class DashboardComponent {
     let initial = 50;
     $('#clearBtn').on('click', () => {
       this.mapHaveClicked = false;
+      this.card.clearInput();
+      this.card.hideWarning();
       this.map.removeMarker();
       this.card.removeRecord(initial);
       this.map.radiusController(initial);
@@ -54,6 +56,10 @@ class DashboardComponent {
         coor = this.map.getMousePosition();
         if (isNaN(coor[0])) { return; } // Prevent Error
         rowCount = this.map.coorContainer.length;
+        if(rowCount >= 7){ // Max Points Show Warning and Return
+          this.card.showWarning();
+          return;
+        };
         this.map.addMarker();
         this.card.addTr(coor, rowCount);
         this.card.slidebarMinValueControl(this.mapHaveClicked);
@@ -66,13 +72,15 @@ class DashboardComponent {
   queryOnClick () {
     let toPOST, coor, radius, toGET;
     $('#queryBtn').on('click', () => {
-      coor = this.map.coorContainer;
-      radius = this.map.fixRadiusContainer;
-      radius.push(this.map.bufferRadius);
-      toPOST = this.query.wrap(coor, radius);
-      console.log(toPOST);
-      this.map.plotData();
-      // this.query.post(toPOST, );
+      if(this.query.postCheck()) {
+        coor = this.map.coorContainer;
+        radius = this.map.fixRadiusContainer;
+        radius.push(this.map.bufferRadius);
+        toPOST = this.query.wrap(coor, radius);
+        console.log(toPOST);
+        this.map.plotData();
+        // this.query.post(toPOST, );
+      }
     });
   }
 
