@@ -42,6 +42,12 @@ class CardView {
     $('#slidebar').attr('min', 1);
     $('#slidebar').val(initial);
     $('#slidebarvalue').html(initial);
+    $('#wInput').val('');
+    $('#nInput').val('');
+    $('#mInput').val('');
+    $('#wSmall').css('visibility', 'hidden');
+    $('#nSmall').css('visibility', 'hidden');
+    $('#mSmall').css('visibility', 'hidden');
   }
 
   // Tr warning
@@ -53,13 +59,19 @@ class CardView {
     $('#maxpoints').css('visibility', 'hidden');
   }
 
-  clearInput () {
-    $('#wInput').val('');
-    $('#nInput').val('');
-    $('#mInput').val('');
-    $('#wSmall').css('visibility', 'hidden');
-    $('#nSmall').css('visibility', 'hidden');
-    $('#mSmall').css('visibility', 'hidden');
+  // Query Onclick Show Result Card
+  showResultCard () {
+    $('#card2').css('transition', '.3s ease-in-out');
+    $('#card2').css('visibility', 'visible');
+    $('#card2').css('width', '330px');
+    setTimeout( function() { $('#card2').css('height', '300px'); }, 300);
+  }
+
+  // Clear Onclick Hide Result Card
+  hideResultCard () {
+    $('#card2').css('height', '10px');
+    setTimeout( function() { $('#card2').css('width', '0px'); }, 300);
+    setTimeout( function() { $('#card2').css('visibility', 'hidden'); }, 600);
   }
 
 

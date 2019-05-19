@@ -42,8 +42,8 @@ class Request {
     let ret = { points: {}, parameter: {}};
     let coorContainer = new Array();
     let w = $('#wInput').val();
-    let month = $('#mInput').val();
-    let n = $('#nInput').val();
+    let month = $('#mInput').val() == '' ? 0 : $('#mInput').val();
+    let n = $('#nInput').val() == '' ? 10 : $('#nInput').val();
 
     for(var i in coor) { // From xy to LonLat
       coorContainer.push(ol.proj.toLonLat(coor[i]));

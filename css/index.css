@@ -18,7 +18,7 @@ body {
 }
 
 /* ClearBtn & MousePosition */
-#clearDiv, #mouse-position, .card {
+#clearDiv, #mouse-position, #card1 {
   position: absolute;
   right: 10px;
 }
@@ -37,13 +37,43 @@ body {
 }
 
 /* Card */
-.card {
+#card1 {
   margin: 80px 0px 0px 0px;
   padding-bottom: 0px;
   width: 400px;
   clear: both;
   float: right;
   box-shadow: 1px 1px 5px #728e97;
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
+#card2 {
+  position: absolute;
+  left: 10px;
+  top: 80px;
+  visibility: hidden;
+  box-shadow: 1px 1px 5px #728e97;
+  width: 0px;
+  height: 10px;
+  /* height: 300px; */
+  /* width: 330px; */
+  max-height: 460px;
+}
+
+/* Scroll bar */
+::-webkit-scrollbar {
+width: 7px;
+}
+::-webkit-scrollbar-track {
+-webkit-border-radius: 10px;
+border-radius: 10px;
+margin:5px 0 5px 0;
+}
+::-webkit-scrollbar-thumb {
+-webkit-border-radius: 4px;
+border-radius: 4px;
+background: rgb(219,219,219);
 }
 
 /* Slide bar */

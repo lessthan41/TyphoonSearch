@@ -28,11 +28,11 @@ class DashboardComponent {
     let initial = 50;
     $('#clearBtn').on('click', () => {
       this.mapHaveClicked = false;
-      this.card.clearInput();
       this.card.hideWarning();
       this.map.removeMarker();
       this.card.removeRecord(initial);
       this.map.radiusController(initial);
+      this.card.hideResultCard();
     })
   }
 
@@ -72,14 +72,17 @@ class DashboardComponent {
   queryOnClick () {
     let toPOST, coor, radius, toGET;
     $('#queryBtn').on('click', () => {
+      if(this.map.coorContainer.length == 0){ return; }; // Null Coordinate Return
       if(this.query.postCheck()) {
         coor = this.map.coorContainer;
-        radius = this.map.fixRadiusContainer;
+        radius = this.map.fixRadiusContainer.slice(); // Reference Problem
         radius.push(this.map.bufferRadius);
         toPOST = this.query.wrap(coor, radius);
         console.log(toPOST);
         this.map.plotData();
         // this.query.post(toPOST, );
+        // Success
+        this.card.showResultCard();
       }
     });
   }
