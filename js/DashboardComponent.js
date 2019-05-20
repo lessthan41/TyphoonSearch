@@ -70,7 +70,7 @@ class DashboardComponent {
 
   // QueryBtn Onclick
   queryOnClick () {
-    let toPOST, coor, radius, toGET;
+    let toPOST, coor, radius, toGET, data;
     $('#queryBtn').on('click', () => {
       if(this.map.coorContainer.length == 0){ return; }; // Null Coordinate Return
       if(this.query.postCheck()) {
@@ -78,10 +78,13 @@ class DashboardComponent {
         radius = this.map.fixRadiusContainer.slice(); // Reference Problem
         radius.push(this.map.bufferRadius);
         toPOST = this.query.wrap(coor, radius);
-        console.log(toPOST);
-        this.map.plotData();
-        // this.query.post(toPOST, );
-        // Success
+        toPOST = JSON.stringify(toPOST);
+        this.query.post(toPOST, 'http://localhost:5000/route_sorting'); // POST
+        this.query.get('http://localhost:5000/route_sorting'); // GET
+        setTimeout( () => {
+          console.log(this.query.getData);
+          this.map.plotData(this.query.getData);
+        }, 5000);
         this.card.showResultCard();
       }
     });

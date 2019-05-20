@@ -4,6 +4,7 @@
 */
 class Request {
   constructor () {
+    this.getData = null;
   }
 
   // load data via ajax
@@ -11,11 +12,12 @@ class Request {
     $.ajax({
       method: 'GET',
       url: url,
-      dataType: 'json',
-      success: function(get) {
-        console.log(get);
-      }
-    });
+      dataType: 'json'
+    })
+      .done( (get) => {
+        console.log('GET success');
+        this.getData = get;
+      });
   }
 
   // post data via ajax
@@ -23,17 +25,16 @@ class Request {
     $.ajax({
       method: 'POST',
       url: url,
-      data: JSON.stringify(toPOST),
+      data: JSON.stringify(toPOST), // You have to Stringify TWICE
       dataType: 'json',
       contentType: "application/json; charset=utf-8"
     })
-    .done(function(data) {
-          // do stuff here
-          console.log('success');
+      .done(() => {
+          console.log('POST success');
       })
-      .fail(function(err) {
-          // do stuff here
-          console.log('failed');
+      .fail((err) => {
+          console.log('POST failed');
+          console.log(err);
       });
   }
 
@@ -41,9 +42,9 @@ class Request {
   wrap (coor, radius) {
     let ret = { points: {}, parameter: {}};
     let coorContainer = new Array();
-    let w = $('#wInput').val();
-    let month = $('#mInput').val() == '' ? 0 : $('#mInput').val();
-    let n = $('#nInput').val() == '' ? 10 : $('#nInput').val();
+    let w = $('#wInput').val() == '' ? '' : parseFloat($('#wInput').val());
+    let month = $('#mInput').val() == '' ? 0 : parseInt($('#mInput').val());
+    let n = $('#nInput').val() == '' ? 10 : parseInt($('#nInput').val());
 
     for(var i in coor) { // From xy to LonLat
       coorContainer.push(ol.proj.toLonLat(coor[i]));
@@ -54,7 +55,7 @@ class Request {
 
     for(var i=0; i<coorContainer.length; i++){ // Points
       ret['points']['point'+ (i+1)] = {
-        longtitude: coorContainer[i][0],
+        longitude: coorContainer[i][0],
         latitude: coorContainer[i][1],
         radius: radius[i]
       };
