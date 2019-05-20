@@ -1,28 +1,30 @@
 /**
-* Deal with Card Component
-*
-*/
+ * Deal with Card Component
+ *
+ */
 class CardView {
-  constructor () {
+  constructor() {
     this.tableRowCount = 1;
   }
 
-  trRadiusControl (value) {
+  trRadiusControl(value) {
     $('#slidebarvalue').html(value);
-    if( $('#tBody tr').length != 0){ // if table have row
+    if ($('#tBody tr').length != 0) { // if table have row
       $('#tBody td:last').html(value + 'km'); // changing last td(newest radius)
     }
   }
 
-  slidebarMinValueControl (mapHaveClicked) {
-    if(!mapHaveClicked){ return; } // Map on First Click no need to Function
+  slidebarMinValueControl(mapHaveClicked) {
+    if (!mapHaveClicked) {
+      return;
+    } // Map on First Click no need to Function
     $('#slidebar').attr('min', $('#slidebar').val());
   }
 
-  addTr (coor, rowCount) {
+  addTr(coor, rowCount) {
     coor = ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
-    coor[0] = Math.round(coor[0]*1000)/1000;
-    coor[1] = Math.round(coor[1]*1000)/1000;
+    coor[0] = Math.round(coor[0] * 1000) / 1000;
+    coor[1] = Math.round(coor[1] * 1000) / 1000;
     $('#tBody')
       .append($('<tr>')
         .append($('<td>')
@@ -36,8 +38,10 @@ class CardView {
     this.tableRowCount++;
   }
 
-  removeRecord (initial) {
+  removeRecord(initial) {
     this.tableRowCount = 1;
+    // $('#card1').css('max-height', '358.2px');
+    // setTimeout(() => {
     $('#tBody tr').remove();
     $('#slidebar').attr('min', 1);
     $('#slidebar').val(initial);
@@ -48,31 +52,70 @@ class CardView {
     $('#wSmall').css('visibility', 'hidden');
     $('#nSmall').css('visibility', 'hidden');
     $('#mSmall').css('visibility', 'hidden');
+    $('#card1').css('max-height', '400px');
+
+    this.hideWarning();
+
+    // }, 300);
   }
 
   // Tr warning
-  showWarning () {
+  showWarning() {
     $('#maxpoints').css('visibility', 'visible');
   }
 
-  hideWarning () {
+  hideWarning() {
     $('#maxpoints').css('visibility', 'hidden');
   }
 
   // Query Onclick Show Result Card
-  showResultCard () {
+  showResultCard() {
     $('#card2').css('transition', '.3s ease-in-out');
     $('#card2').css('visibility', 'visible');
-    $('#card2').css('width', '330px');
-    setTimeout( function() { $('#card2').css('height', '300px'); }, 300);
+    $('#card2').css('width', '400px');
+    setTimeout(function() {
+      $('#card2').css('height', '280px');
+    }, 300);
   }
 
   // Clear Onclick Hide Result Card
-  hideResultCard () {
+  hideResultCard() {
     $('#card2').css('height', '10px');
-    setTimeout( function() { $('#card2').css('width', '0px'); }, 300);
-    setTimeout( function() { $('#card2').css('visibility', 'hidden'); }, 600);
+    setTimeout(function() {
+      $('#card2').css('width', '0px');
+    }, 300);
+    setTimeout(function() {
+      $('#card2').css('visibility', 'hidden');
+    }, 600);
   }
 
+  onload() {
+    $('#drawBgcolor').css('display', 'unset');
+    $('.spinner-grow').css('display', 'unset');
+    $('#drawBgcolor').css('opacity', '1');
+  }
+
+  disOnload() {
+    $('#drawBgcolor').css('opacity', '0');
+    $('.spinner-grow').css('opacity', '0');
+    setTimeout( () => {
+      $('#drawBgcolor').css('display', 'none');
+      $('.spinner-grow').css('display', 'none');
+    }, 800);
+  }
+
+  btnSwitch (btncase) {
+    switch (btncase) {
+      case 'Moon':
+        $('.fa-sun').css('display', 'unset');
+        $('.fa-moon').css('display', 'none');
+        break;
+
+      case 'Sun':
+        $('.fa-moon').css('display', 'unset');
+        $('.fa-sun').css('display', 'none');
+        break;
+    };
+  }
 
 }

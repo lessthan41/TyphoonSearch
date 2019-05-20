@@ -11,54 +11,105 @@ body {
   width: 100vw;
 }
 
+/* Onload */
+#drawBgcolor {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fcfcfca1;
+  opacity: 0;
+  display: none;
+  transition: .8s ease-in-out;
+  z-index: 3;
+}
+
+.spinner-grow {
+  position: fixed;
+  color: black;
+  margin: auto;
+  margin-top: 47vh;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4rem;
+  height: 4rem;
+  display: none;
+  transition: .8s ease-in-out;
+  z-index: 4;
+}
+
 /* Map */
 #map {
   height: 100vh;
   width: 100vw;
+  z-index: 1;
 }
 
-/* ClearBtn & MousePosition */
-#clearDiv, #mouse-position, #card1 {
+/* Right */
+#switchBtn, #card1 {
   position: absolute;
   right: 10px;
 }
-#mouse-position {
-  margin-top: 5px;
+
+#switchBtn {
+  bottom: 22px;
   float: right;
+  color: #c8d6e1;
+  width: 40px;
+  height: 40px;
+  padding: 3px 11px;
+  font-size: 18px;
+  line-height: 1.5;
+  border-radius: 25px;
+  box-shadow: 2px 2px 4px #2c5427d1;
+  z-index: 2;
 }
-#clearDiv {
-  margin-top: 30px;
-  float: right;
+#switchBtn:hover {
+  color: #ffffff;
+  box-shadow: 0.5px 0.5px 10px #ffffff;
 }
+
+/* Left */
 #detail {
   position: absolute;
-  left: 10px;
-  bottom: 10px;
+  left: 5px;
+  bottom: 5px;
+}
+#mouse-position {
+  position: absolute;
+  bottom: 5px;
+  left: 90px;
 }
 
 /* Card */
 #card1 {
-  margin: 80px 0px 0px 0px;
+  margin: 10px 1px 0px 0px;
   padding-bottom: 0px;
   width: 400px;
-  clear: both;
+  /* clear: both; */
   float: right;
   box-shadow: 1px 1px 5px #728e97;
-  max-height: 600px;
+  max-height: 400px;
   overflow-y: scroll;
+  transition: .3s ease-in-out;
+  z-index: 4;
 }
 
 #card2 {
-  position: absolute;
-  left: 10px;
-  top: 80px;
+  position: fixed;
+  right: 10px;
+  top: 420px;
   visibility: hidden;
   box-shadow: 1px 1px 5px #728e97;
   width: 0px;
   height: 10px;
+  max-height: 280px;
+  overflow-y: scroll;
   /* height: 300px; */
   /* width: 330px; */
   max-height: 460px;
+  z-index: 4;
 }
 
 /* Scroll bar */
@@ -125,7 +176,11 @@ background: rgb(219,219,219);
   visibility: hidden;
 }
 
-/* Query Btn */
-#queryDiv {
+/* Btn */
+#btnDiv {
   float: right;
+}
+#clearBtn {
+  margin-right: 5px;
+  width: 69.58px;
 }

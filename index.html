@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
   <!-- Bootstrap's CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- Font Awesome's CSS -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
   <!-- my css -->
   <link rel="stylesheet" href="./css/index.css">
 </head>
@@ -17,16 +19,16 @@
 <body>
 
   <div class="Outerdiv">
+
+    <!-- Onload Div -->
+    <div id=drawBgcolor></div>
+
+    <div class="spinner-grow" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+
     <!-- map -->
     <div id="map"></div>
-
-    <!-- GetMousePosition -->
-    <div id="mouse-position"></div>
-
-    <!-- Clear Btn -->
-    <div id=clearDiv>
-      <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
-    </div>
 
     <!-- Query Card -->
     <div class="card" id=card1>
@@ -72,11 +74,19 @@
           </div>
         </form>
         <!----------------------------------------------------->
-        <div id=queryDiv>
+        <div id=btnDiv>
+          <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
           <button type="button" class="btn btn-primary" id=queryBtn>Query</button>
         </div>
       </div>
     </div>
+
+    <!-- Switch Btn -->
+    <button type="button" class="btn btn-default btn-circle btn-lg" id="switchBtn" style="background-color: #3b5998;">
+      <i class="fas fa-sun" style="display: none;"></i>
+      <i class="fas fa-moon"></i>
+    </button>
+
     <!----------------------------------------------------->
     <!-- Result Card -->
     <div class="card" id=card2>
@@ -86,6 +96,8 @@
 
     <!-- Proj info -->
     <div id=detail>EPSG: 3857</div>
+    <!-- GetMousePosition -->
+    <div id="mouse-position"></div>
   </div>
 
   <!--==================================

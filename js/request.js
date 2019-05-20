@@ -7,15 +7,14 @@ class Request {
     this.getData = null;
   }
 
-  // load data via ajax
+  // get data via ajax
   get(url) {
-    $.ajax({
+    return $.ajax({ // return to use done
       method: 'GET',
       url: url,
       dataType: 'json'
     })
       .done( (get) => {
-        console.log('GET success');
         this.getData = get;
       });
   }

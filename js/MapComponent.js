@@ -14,9 +14,14 @@ class MapComponent {
     this.fixBufferLayer = new ol.layer.Vector({});
     this.bufferLayer = new ol.layer.Vector({});
     this.pointDataLayer = new Array(); // for data points
-    this.lineDataLayer = new Array(); // for data lines
+    this.lineDataStyle = new Array(); // for data lines
     this.pointDataLayerCount = 0; // Data Points Layers Count
     this.lineDataLayerCount = 0; // Data Line Layers Count
+    this.mapTile = new ol.layer.Tile({
+      source: new ol.source.OSM({
+        'url': 'http://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+      })
+    });
     this.pointStyle1 = [
       new ol.style.Style({
           image: new ol.style.Icon(({
@@ -43,7 +48,7 @@ class MapComponent {
           }))
       })
     ];
-    this.lineStyle1 = [
+    this.lineStyle1 = [ // User Input
       new ol.style.Style({
         stroke: new ol.style.Stroke({
           color: 'white',
@@ -51,19 +56,11 @@ class MapComponent {
         })
       })
     ];
-    this.lineStyle2 = [
-      new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: '#9386f488',
-          width: 3
-        })
-      })
-    ];
     this.bufferStyle = [
       new ol.style.Style({
           stroke: new ol.style.Stroke({
               color: '#8181f4',
-              width: 3
+              width: 1
           }),
           fill: new ol.style.Fill({
               color: 'rgba(0, 0, 255, 0.1)'
@@ -91,9 +88,7 @@ class MapComponent {
           }
         }).extend([this.mousePositionControl]),
         layers: [ // OSM
-          new ol.layer.Tile({
-            source: new ol.source.OSM()
-          }),
+          this.mapTile,
           this.pointLayer, // Empty Layer for addMarker
           this.lineLayer,  // Empty Layer for addLine
           this.bufferLayer, // Empty Layer for addBuffer
@@ -194,24 +189,39 @@ class MapComponent {
 
   // Add History Data Line
   addDataLine (coor) {
-    let source, feature, layer, dataLength;
-    this.lineDataLayer = [];
+    let source, feature, layer, opacity, split, self, currentColor;
+    let count = 0;
+    let style = new Array();
     this.map.getLayers().getArray().splice(5,this.lineDataLayerCount); // Clear Layers
-    for(var i in coor) {
-        feature = new ol.Feature({ geometry: new ol.geom.LineString(coor[i]) });
-        feature.setStyle(this.lineStyle2); // set style
-        source = new ol.source.Vector({ features: [feature] });
-        layer = new ol.layer.Vector({ source: source });
-        this.lineDataLayer.push( layer );
-    }
+    this.lineDataLayerCount = Object.keys(coor).length;
 
-    dataLength = Object.keys(coor).length;
-    this.lineDataLayerCount = dataLength;
-    for(var i=0; i<dataLength; i++) {
-      this.map.getLayers().getArray().splice(5,0,this.lineDataLayer[i]); // Add Layer at the last of the layer
+    for(var i=0; i<this.lineDataLayerCount; i++) {
+      self = Object.keys(coor)[i];
+      feature = new ol.Feature({ geometry: new ol.geom.LineString(coor[self]) });
+      opacity = Math.round((1 - count/this.lineDataLayerCount) * 10) / 10;
+      this.setIndepStyle(feature, opacity);
+      source = new ol.source.Vector({ features: [feature] });
+      layer = new ol.layer.Vector({ source: source });
+      this.map.getLayers().getArray().splice(5,0,layer);
+      count++;
     }
 
     this.map.render();
+  }
+
+  // Set Independent Data Style
+  setIndepStyle (feature, opacity) {
+    let lineStyle =
+      new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: 'rgba(18, 132, 54, ' + opacity + ')',
+          width: 3
+        })
+      });
+
+    this.lineDataStyle.push(lineStyle);
+    feature.setStyle(lineStyle); // set style
+
   }
 
   // Add Changable Buffer
@@ -270,8 +280,9 @@ class MapComponent {
     return radius/groundRadius * radius; // Ratio * radius
   }
 
+  // GET history data plot data
   plotData (data) {
-    console.log('IM iN');
+
     let coor = new Array();
     let coorContainer = new Object();
 
@@ -285,7 +296,32 @@ class MapComponent {
     };
 
     this.addDataLine(coorContainer); // addDataLine First because of layer order
-    console.log('IM DONE');
+  }
+
+  // Switch Tile
+  tileSwitch (btncase) {
+    switch (btncase) {
+      case 'Sun':
+      console.log('IN');
+        this.mapTile = new ol.layer.Tile({
+          source: new ol.source.OSM({
+            'url': 'http://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+          })
+        });
+        this.map.getLayers().getArray().splice(0,1,this.mapTile);
+        break;
+
+      case 'Moon':
+        this.mapTile = new ol.layer.Tile({
+          source: new ol.source.OSM({
+            'url': 'http://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+          })
+        });
+        this.map.getLayers().getArray().splice(0,1,this.mapTile);
+        break;
+    };
+
+    this.map.render();
   }
 
 }
