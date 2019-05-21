@@ -1,9 +1,9 @@
-/**
-* Data Acqired
-* Dashboard Init
-*/
+
+var dashboard;
+
+// Document Onready
 $(function () {
-  var dashboard = new DashboardComponent();
+  dashboard = new DashboardComponent();
 
   // dashboard init
   dashboard.init();

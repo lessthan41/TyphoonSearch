@@ -17,6 +17,7 @@ class MapComponent {
     this.lineDataStyle = new Array(); // for data lines
     this.pointDataLayerCount = 0; // Data Points Layers Count
     this.lineDataLayerCount = 0; // Data Line Layers Count
+    this.switchCondition = 'Sun'
     this.mapTile = new ol.layer.Tile({
       source: new ol.source.OSM({
         'url': 'http://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
@@ -51,22 +52,41 @@ class MapComponent {
     this.lineStyle1 = [ // User Input
       new ol.style.Style({
         stroke: new ol.style.Stroke({
+          color: 'black',
+          width: 2
+        })
+      })
+    ];
+    this.lineStyle2 = [ // User Input
+      new ol.style.Style({
+        stroke: new ol.style.Stroke({
           color: 'white',
           width: 2
         })
       })
     ];
-    this.bufferStyle = [
+    this.bufferStyle1 = [
       new ol.style.Style({
           stroke: new ol.style.Stroke({
-              color: '#8181f4',
+              color: '#595959',
               width: 1
           }),
           fill: new ol.style.Fill({
-              color: 'rgba(0, 0, 255, 0.1)'
+              color: 'rgba(61, 60, 60, 0.3)'
           })
       })
-    ]
+    ];
+    this.bufferStyle2 = [
+      new ol.style.Style({
+          stroke: new ol.style.Stroke({
+              color: 'white',
+              width: 1
+          }),
+          fill: new ol.style.Fill({
+              color: 'rgba(255, 255, 255, 0.3)'
+          })
+      })
+    ];
   }
 
   render () {
@@ -126,19 +146,21 @@ class MapComponent {
   // Get Coordinate and Return [x, y](m)
   getMousePosition () {
     let currentPosition = $('#mouse-position').text();
-    let x = parseFloat(currentPosition.substring(0, 15));
-    let y = parseFloat(currentPosition.substring(15));
+    let commaPosition = currentPosition.indexOf(',');
+    let x = parseFloat(currentPosition.substring(0, commaPosition));
+    let y = parseFloat(currentPosition.substring(commaPosition+1));
     return [x, y];
   }
 
   // Add Point
   addPoint (coor) {
     let featurePoints = new Array();
+    let style = this.switchCondition == 'Sun' ? this.pointStyle1 : this.pointStyle2;
     let source;
 
     for(var i=0; i<coor.length; i++) { // for i in coor add Feature and set style
       featurePoints[i] = new ol.Feature({ geometry: new ol.geom.Point(coor[i]) });
-      featurePoints[i].setStyle(this.pointStyle1);
+      featurePoints[i].setStyle(style);
     }
 
     source = new ol.source.Vector ({ features: featurePoints });
@@ -178,9 +200,10 @@ class MapComponent {
   // Add Line
   addLine (coor) {
     let source, feature;
+    let style = this.switchCondition == 'Sun' ? this.lineStyle1 : this.lineStyle2;
 
     feature = new ol.Feature({ geometry: new ol.geom.LineString(coor) });
-    feature.setStyle(this.lineStyle1); // set style
+    feature.setStyle(style); // set style
     source = new ol.source.Vector({ features: [feature] });
     this.lineLayer = new ol.layer.Vector({ source: source });
     this.map.getLayers().getArray().splice(2,1,this.lineLayer); // replace the previous one
@@ -211,10 +234,11 @@ class MapComponent {
 
   // Set Independent Data Style
   setIndepStyle (feature, opacity) {
+    let lineColor = this.switchCondition == 'Sun' ? 'rgba(12, 96, 39, ' : 'rgba(34, 165, 1, ';
     let lineStyle =
       new ol.style.Style({
         stroke: new ol.style.Stroke({
-          color: 'rgba(18, 132, 54, ' + opacity + ')',
+          color: lineColor + opacity + ')',
           width: 3
         })
       });
@@ -230,9 +254,10 @@ class MapComponent {
     let center = coorLength == 0 ? [] : coor[coorLength-1]; // Prevent error
     let radius = this.radiusCorrection(center, this.bufferRadius); // Radius Correction
     let buffer = new ol.Feature({ geometry: new ol.geom.Circle(center, radius) }); // the newest point
+    let style = this.switchCondition == 'Sun' ? this.bufferStyle1 : this.bufferStyle2;
     let sourceBuffer;
 
-    buffer.setStyle(this.bufferStyle);
+    buffer.setStyle(style);
     sourceBuffer = new ol.source.Vector({ features: [buffer] });
     this.bufferLayer = new ol.layer.Vector({ source: sourceBuffer });
     this.map.getLayers().getArray().splice(3,1,this.bufferLayer); // replace the previous one
@@ -241,10 +266,12 @@ class MapComponent {
 
   // Add Fixed Buffer
   addFixBuffer (coor) {
+
     let coorLength = coor.length;
     let center = coor.slice();
     let fixBufferArray = new Array();
     let sourceBuffer;
+    let style = this.switchCondition == 'Sun' ? this.bufferStyle1 : this.bufferStyle2;
     center.pop(); // pop the newest point
 
     if(coorLength >= 2){ // setting feature is needed only when points >= 2
@@ -252,7 +279,7 @@ class MapComponent {
       for(var i=0; i<coorLength-1; i++){
         let radius = this.radiusCorrection(center[i], this.fixRadiusContainer[i]); // Radius Correction
         fixBufferArray[i] = new ol.Feature({ geometry: new ol.geom.Circle(center[i], radius) });
-        fixBufferArray[i].setStyle(this.bufferStyle);
+        fixBufferArray[i].setStyle(style);
       }
     }
 
@@ -300,15 +327,17 @@ class MapComponent {
 
   // Switch Tile
   tileSwitch (btncase) {
+    this.switchCondition = btncase;
     switch (btncase) {
       case 'Sun':
-      console.log('IN');
         this.mapTile = new ol.layer.Tile({
           source: new ol.source.OSM({
             'url': 'http://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
           })
         });
-        this.map.getLayers().getArray().splice(0,1,this.mapTile);
+
+        this.map.getLayers().getArray().splice(0,1,this.mapTile); // Change Tile
+
         break;
 
       case 'Moon':
@@ -317,8 +346,26 @@ class MapComponent {
             'url': 'http://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
           })
         });
-        this.map.getLayers().getArray().splice(0,1,this.mapTile);
+        this.map.getLayers().getArray().splice(0,1,this.mapTile); // Change Tile
+
         break;
+    };
+
+    let pointStyle = this.switchCondition == 'Sun' ? this.pointStyle1 : this.pointStyle2;
+    let lineStyle = this.switchCondition == 'Sun' ? this.lineStyle1 : this.lineStyle2;
+    let bufferStyle = this.switchCondition == 'Sun' ? this.bufferStyle1 : this.bufferStyle2;
+
+    if(this.coorContainer.length >= 1){
+      for(var i=0; i<this.coorContainer.length; i++){
+        this.map.getLayers().getArray()[2].getSource().getFeatures()[0].setStyle(this.lineStyle2); // Change User Line
+        this.map.getLayers().getArray()[3].getSource().getFeatures()[0].setStyle(this.bufferStyle2); // Change Buffer Style
+        this.map.getLayers().getArray()[1].getSource().getFeatures()[i].setStyle(this.pointStyle2); // Change Pointer Style
+      };
+    };
+    if(this.coorContainer.length >= 2){
+      for(var i=0; i<this.coorContainer.length-1; i++){
+        this.map.getLayers().getArray()[4].getSource().getFeatures()[i].setStyle(this.bufferStyle2);
+      };
     };
 
     this.map.render();
