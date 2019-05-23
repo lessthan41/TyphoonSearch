@@ -97,7 +97,7 @@ class DashboardComponent {
             setTimeout( () => {
               this.card.disOnload();
               this.card.showResultCard(this.query.getData);
-              this.resultOnHover();
+              this.resultOnHover(this.switchCondition);
             }, 1000);
           });
       }
@@ -110,19 +110,21 @@ class DashboardComponent {
       if (this.switchCondition == 'Sun') {
         this.card.SunMoon('Moon');
         this.map.tileSwitch('Moon');
+        this.resultOnHover('Moon');
         this.switchCondition = 'Moon';
       } else if (this.switchCondition == 'Moon') {
         this.card.SunMoon('Sun');
         this.map.tileSwitch('Sun');
+        this.resultOnHover('Sun');
         this.switchCondition = 'Sun';
       };
     });
   }
 
   // Result Card Onhover
-  resultOnHover () {
-    let hoverColor = this.switchCondition == 'Sun' ? '#e1f4de' : '#ece6f8c1';
-    let returnColor = this.switchCondition == 'Sun' ? 'white' : '#4c4c4c';
+  resultOnHover (switchCondition) {
+    let hoverColor = switchCondition == 'Sun' ? '#e1f4de' : '#8c8c8c';
+    let returnColor = switchCondition == 'Sun' ? 'white' : '#4c4c4c';
 
     $('#resultTbody tr').hover(function(){
       $(this).css('background-color', hoverColor);

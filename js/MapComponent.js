@@ -13,8 +13,9 @@ class MapComponent {
     this.lineLayer = new ol.layer.Vector({});
     this.fixBufferLayer = new ol.layer.Vector({});
     this.bufferLayer = new ol.layer.Vector({});
-    this.pointDataLayer = new Array(); // for data points
-    this.lineDataStyle = new Array(); // for data lines
+    // this.pointDataLayer = new Array(); // for data points
+    this.lineDataCoor = new Object(); // for data lines
+    this.lineDataStyle = new Array(); // for data lines style
     this.pointDataLayerCount = 0; // Data Points Layers Count
     this.lineDataLayerCount = 0; // Data Line Layers Count
     this.switchCondition = 'Sun'
@@ -215,6 +216,7 @@ class MapComponent {
     let source, feature, layer, opacity, split, self, currentColor;
     let count = 0;
     let style = new Array();
+    this.lineDataStyle = []; // Clear Style Array
     this.map.getLayers().getArray().splice(5,this.lineDataLayerCount); // Clear Layers
     this.lineDataLayerCount = Object.keys(coor).length;
 
@@ -307,22 +309,22 @@ class MapComponent {
     return radius/groundRadius * radius; // Ratio * radius
   }
 
-  // GET history data plot data
+  // After GET history data plot data
   plotData (data) {
 
     let coor = new Array();
-    let coorContainer = new Object();
+    this.lineDataCoor = new Object();
 
     for(var i in data){
-      coorContainer[i] = new Array();
+      this.lineDataCoor[i] = new Array();
       for (var j in data[i]['points']) {
         coor = [data[i]['points'][j]['longitude'], data[i]['points'][j]['latitude']];
         coor = ol.proj.fromLonLat(coor);
-        coorContainer[i].push(coor);
+        this.lineDataCoor[i].push(coor);
       };
     };
 
-    this.addDataLine(coorContainer); // addDataLine First because of layer order
+    this.addDataLine(this.lineDataCoor);
   }
 
   // Switch Tile
@@ -356,6 +358,7 @@ class MapComponent {
     let bufferStyle = this.switchCondition == 'Sun' ? this.bufferStyle1 : this.bufferStyle2;
 
     if(this.coorContainer.length >= 1){
+      this.addDataLine(this.lineDataCoor); // Change Data Line
       this.map.getLayers().getArray()[2].getSource().getFeatures()[0].setStyle(lineStyle); // Change User Line
       this.map.getLayers().getArray()[3].getSource().getFeatures()[0].setStyle(bufferStyle); // Change Buffer Style
       for(var i=0; i<this.coorContainer.length; i++){

@@ -107,6 +107,7 @@ body {
   max-height: 280px;
   overflow-x: hidden;
   padding: 0.75rem 0.5rem 0.75rem 0.5rem;
+  transition: .3s ease-in-out;
   /* height: 300px; */
   /* width: 330px; */
   max-height: 460px;

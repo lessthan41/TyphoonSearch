@@ -102,7 +102,7 @@ class CardView {
           .append($('<td>').html(data[i]['id'])));
     };
 
-    $('#resultTbody tr').css('transition', '.2s ease-in-out');
+    $('#resultTbody tr').css('transition', '.3s ease-in-out');
   }
 
   // Clear Onclick Hide Result Card
@@ -118,7 +118,6 @@ class CardView {
 
   // Expand Result Card
   expandResultCard () {
-    $('#card2').css('transition', '.3s ease-in-out');
     $('#card2').css('visibility', 'visible');
     $('#card2').css('width', '400px');
     setTimeout(function() {
@@ -184,6 +183,7 @@ class CardView {
     $('.table').css('color', fontColor);
     $('.card').css('box-shadow', boxShadow);
     $('#drawBgcolor').css('background-color', onloadColor);
+    $('#resultTbody tr').css('background-color', cardColor);
   }
 
 }
