@@ -356,15 +356,15 @@ class MapComponent {
     let bufferStyle = this.switchCondition == 'Sun' ? this.bufferStyle1 : this.bufferStyle2;
 
     if(this.coorContainer.length >= 1){
+      this.map.getLayers().getArray()[2].getSource().getFeatures()[0].setStyle(lineStyle); // Change User Line
+      this.map.getLayers().getArray()[3].getSource().getFeatures()[0].setStyle(bufferStyle); // Change Buffer Style
       for(var i=0; i<this.coorContainer.length; i++){
-        this.map.getLayers().getArray()[2].getSource().getFeatures()[0].setStyle(this.lineStyle2); // Change User Line
-        this.map.getLayers().getArray()[3].getSource().getFeatures()[0].setStyle(this.bufferStyle2); // Change Buffer Style
-        this.map.getLayers().getArray()[1].getSource().getFeatures()[i].setStyle(this.pointStyle2); // Change Pointer Style
+        this.map.getLayers().getArray()[1].getSource().getFeatures()[i].setStyle(pointStyle); // Change Pointer Style
       };
     };
     if(this.coorContainer.length >= 2){
       for(var i=0; i<this.coorContainer.length-1; i++){
-        this.map.getLayers().getArray()[4].getSource().getFeatures()[i].setStyle(this.bufferStyle2);
+        this.map.getLayers().getArray()[4].getSource().getFeatures()[i].setStyle(bufferStyle);
       };
     };
 
