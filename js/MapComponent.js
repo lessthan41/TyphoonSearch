@@ -122,7 +122,7 @@ class MapComponent {
       });
   }
 
-  // Add Pointer
+  /* Add Pointer */
   addMarker () {
     setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
       this.coorContainer.push( this.getMousePosition() );
@@ -133,7 +133,7 @@ class MapComponent {
     }, 10);
   }
 
-  // Clear Pointer and Line
+  /* Clear Pointer and Line */
   removeMarker () {
     this.coorContainer = [];
     this.fixRadiusContainer = [];
@@ -144,7 +144,7 @@ class MapComponent {
     this.addDataLine(this.coorContainer);
   }
 
-  // Get Coordinate and Return [x, y](m)
+  /* Get Coordinate and Return [x, y](m) */
   getMousePosition () {
     let currentPosition = $('#mouse-position').text();
     let commaPosition = currentPosition.indexOf(',');
@@ -153,7 +153,7 @@ class MapComponent {
     return [x, y];
   }
 
-  // Add Point
+  /* Add Point */
   addPoint (coor) {
     let featurePoints = new Array();
     let style = this.switchCondition == 'Sun' ? this.pointStyle1 : this.pointStyle2;
@@ -170,7 +170,7 @@ class MapComponent {
     this.map.render();
   }
 
-  // Add History Data Points
+  /* Add History Data Points */
   addDataPoint (coor) {
 
     // this.pointDataLayer = [];
@@ -198,7 +198,7 @@ class MapComponent {
 
   }
 
-  // Add Line
+  /* Add Line */
   addLine (coor) {
     let source, feature;
     let style = this.switchCondition == 'Sun' ? this.lineStyle1 : this.lineStyle2;
@@ -211,7 +211,7 @@ class MapComponent {
     this.map.render();
   }
 
-  // Add History Data Line
+  /* Add History Data Line */
   addDataLine (coor) {
     let source, feature, layer, opacity, split, self, currentColor;
     let count = 0;
@@ -234,7 +234,7 @@ class MapComponent {
     this.map.render();
   }
 
-  // Set Independent Data Style
+  /* Set Independent Data Style */
   setIndepStyle (feature, opacity) {
     let lineColor = this.switchCondition == 'Sun' ? 'rgba(12, 96, 39, ' : 'rgba(34, 165, 1, ';
     let lineStyle =
@@ -247,10 +247,9 @@ class MapComponent {
 
     this.lineDataStyle.push(lineStyle);
     feature.setStyle(lineStyle); // set style
-
   }
 
-  // Add Changable Buffer
+  /* Add Changable Buffer */
   addBuffer (coor) {
     let coorLength = coor.length;
     let center = coorLength == 0 ? [] : coor[coorLength-1]; // Prevent error
@@ -266,7 +265,7 @@ class MapComponent {
     this.map.render();
   }
 
-  // Add Fixed Buffer
+  /* Add Fixed Buffer */
   addFixBuffer (coor) {
 
     let coorLength = coor.length;
@@ -291,13 +290,13 @@ class MapComponent {
     this.map.render();
   }
 
-  // Change radius
+  /* Change radius */
   radiusController (radius) {
     this.bufferRadius = radius * 1000; // km to m
     this.addBuffer(this.coorContainer);
   }
 
-  // Convert Radius Wanted(m) into value to input
+  /* Convert Radius Wanted(m) into value to input */
   radiusCorrection (center, radius) {
     let edgeCoordinate = [center[0] + radius, center[1]];
     let wgs84Sphere = new ol.Sphere(6378137);
@@ -309,7 +308,7 @@ class MapComponent {
     return radius/groundRadius * radius; // Ratio * radius
   }
 
-  // After GET history data plot data
+  /* After GET history data plot data */
   plotData (data) {
 
     let coor = new Array();
@@ -327,7 +326,7 @@ class MapComponent {
     this.addDataLine(this.lineDataCoor);
   }
 
-  // Switch Tile
+  /* Switch Tile */
   tileSwitch (btncase) {
     this.switchCondition = btncase;
     switch (btncase) {
@@ -372,6 +371,28 @@ class MapComponent {
     };
 
     this.map.render();
+  }
+
+  /* Result Tr Hover */
+  dataLineShine (indx) {
+    let lineColor = this.switchCondition == 'Sun' ? 'rgba(12, 96, 39, 0.1)' : 'rgba(34, 165, 1, 0.1)';
+    let targetLineColor = this.switchCondition == 'Sun' ? 'rgba(12, 96, 39, 1)' : 'rgba(34, 165, 1, 1)';
+    let layerCount = this.map.getLayers().getArray().length;
+    let target = this.map.getLayers().getArray()[layerCount - indx];
+    let self;
+
+    /* set Every Data Line Color */
+    for(var i=5; i<layerCount; i++) { // start from 5, 4 is the layer length of basic map
+      self = this.map.getLayers().getArray()[i];
+      self.getSource().getFeatures()[0].getStyle().getStroke()['a'] = lineColor;
+      self.getSource().changed();
+    }
+
+    /* set Target Line color */
+    target.getSource().getFeatures()[0].getStyle().getStroke()['a'] = targetLineColor;
+    target.getSource().changed();
+
+    this.map.renderSync();
   }
 
 }

@@ -62,7 +62,7 @@ class CardView {
     // }, 300);
   }
 
-  // Tr warning
+  /* Tr warning */
   showWarning() {
     $('#maxpoints').css('visibility', 'visible');
   }
@@ -71,7 +71,7 @@ class CardView {
     $('#maxpoints').css('visibility', 'hidden');
   }
 
-  // Query Onclick Show Result Card
+  /* Query Onclick Show Result Card */
   showResultCard(data) {
 
     let name, ret;
@@ -105,7 +105,7 @@ class CardView {
     $('#resultTbody tr').css('transition', '.3s ease-in-out');
   }
 
-  // Clear Onclick Hide Result Card
+  /* Clear Onclick Hide Result Card */
   hideResultCard() {
 
     if(this.resultTableExist) { // thead does not Exist
@@ -116,7 +116,7 @@ class CardView {
     this.shrimpResultCard();
   }
 
-  // Expand Result Card
+  /* Expand Result Card */
   expandResultCard () {
     $('#card2').css('visibility', 'visible');
     $('#card2').css('width', '400px');
@@ -125,7 +125,7 @@ class CardView {
     }, 300);
   }
 
-  // Shrimp Result Card
+  /* Shrimp Result Card */
   shrimpResultCard () {
     $('#card2').css('height', '10px');
     setTimeout(function() {
@@ -134,14 +134,14 @@ class CardView {
     }, 300);
   }
 
-  // History Route Onload
+  /* History Route Onload */
   onload() {
     $('#drawBgcolor').css('display', 'unset');
     $('.spinner-grow').css('display', 'unset');
     $('#drawBgcolor').css('opacity', '1');
   }
 
-  // Stop Onload
+  /* Stop Onload */
   disOnload() {
     $('#drawBgcolor').css('opacity', '0');
     $('.spinner-grow').css('opacity', '0');
@@ -151,7 +151,7 @@ class CardView {
     }, 800);
   }
 
-  // Sun or Moon Btn
+  /* Sun or Moon Btn */
   btnSwitch (btncase) {
     switch (btncase) {
       case 'Moon':
@@ -166,7 +166,7 @@ class CardView {
     };
   }
 
-  // CSS View Change between Sun and Moon
+  /* CSS View Change between Sun and Moon */
   SunMoon (sunOrMoon) {
     this.switchCondition = sunOrMoon;
     let onloadColor = sunOrMoon == 'Sun' ? '#fcfcfca1' : '#00000098';

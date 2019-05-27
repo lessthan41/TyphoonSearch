@@ -9,7 +9,7 @@ class DashboardComponent {
     this.query = new Request();
     this.mapHaveClicked = false; // for control Slidebar min
     this.switchCondition = 'Sun';
-    this.resultHoverEvent = null; // for indep line color
+    this.resultHoverEvent = null;
   }
 
   init() {
@@ -21,12 +21,12 @@ class DashboardComponent {
     this.switchOnClick();
   }
 
-  // init
+  /* init */
   mapInit() {
     this.map.render();
   }
 
-  // ClearBtn Onclick
+  /* ClearBtn Onclick */
   clearBtnOnClick() {
     let initial = 50;
     $('#clearBtn').on('click', () => {
@@ -38,7 +38,7 @@ class DashboardComponent {
     })
   }
 
-  // Slidebar Oninput
+  /* Slidebar Oninput */
   slideBarOnInput() {
     let currentValue;
     $('#slidebar').on('input', () => {
@@ -48,7 +48,7 @@ class DashboardComponent {
     });
   }
 
-  // Map Onclick
+  /* Map Onclick */
   mapOnClick() {
     let coor;
     let rowCount;
@@ -74,7 +74,7 @@ class DashboardComponent {
     });
   }
 
-  // QueryBtn Onclick
+  /*  QueryBtn Onclick */
   queryOnClick() {
     let toPOST, coor, radius, toGET, data;
     $('#queryBtn').on('click', () => {
@@ -88,24 +88,28 @@ class DashboardComponent {
         radius.push(this.map.bufferRadius);
         toPOST = this.query.wrap(coor, radius);
         toPOST = JSON.stringify(toPOST);
-        this.query.post(toPOST, 'http://localhost:5000/route_sorting'); // POST
-        this.query.get('http://localhost:5000/route_sorting') // GET
-          .done((get) => {
-            console.log('GET success');
-            // console.log(this.query.getData);
-            this.map.plotData(this.query.getData);
-            setTimeout( () => {
-              this.card.disOnload();
-              this.card.showResultCard(this.query.getData);
-              this.resultOnHover(this.switchCondition);
-            }, 1000);
+        this.query.post(toPOST, 'http://localhost:5000/route_sorting')
+          .done(() => { // POST
+            console.log('POST success');
+
+            this.query.get('http://localhost:5000/route_sorting')
+              .done((get) => { // GET
+                console.log('GET success');
+
+                this.map.plotData(this.query.getData);
+                setTimeout(() => {
+                  this.card.disOnload();
+                  this.card.showResultCard(this.query.getData);
+                  this.resultOnHover(this.switchCondition);
+                }, 1000);
+              });
           });
       }
     });
   }
 
-  // Switch Btn Onclick
-  switchOnClick () {
+  /* Switch Btn Onclick */
+  switchOnClick() {
     $('#switchBtn').on('click', () => {
       if (this.switchCondition == 'Sun') {
         this.card.SunMoon('Moon');
@@ -121,18 +125,30 @@ class DashboardComponent {
     });
   }
 
-  // Result Card Onhover
-  resultOnHover (switchCondition) {
+  /* Result Card Onhover */
+  resultOnHover(switchCondition) {
+    let resultHoverEvent;
     let hoverColor = switchCondition == 'Sun' ? '#e1f4de' : '#8c8c8c';
     let returnColor = switchCondition == 'Sun' ? 'white' : '#4c4c4c';
 
-    $('#resultTbody tr').hover(function(){
+    /* Control CSS & Store Data */
+    $('#resultTbody tr').hover(function () {
       $(this).css('background-color', hoverColor);
-      this.resultHoverEvent = $(this).closest('tr').find('td:first').text();
-      console.log(this.resultHoverEvent);
-    }, function(){
-      $(this).css('background-color', returnColor);
+      resultHoverEvent = $(this).closest('tr').find('td:first').text();
+    }, function() {
+      $('#resultTbody tr').css('background-color', returnColor);
     });
+
+    /* Pass Data */
+    $('#resultTbody tr').on('mouseover', () => {
+      this.map.dataLineShine(resultHoverEvent);
+    });
+    
+    /* Restore Color */
+    $('#resultTbody tr').on('mouseout', () => {
+      this.map.addDataLine(this.map.lineDataCoor);
+    });
+
   }
 
 }
