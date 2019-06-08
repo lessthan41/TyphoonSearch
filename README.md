@@ -9,7 +9,7 @@
 當檔案準備好後 init()   
 
 2.  DashboardComponent.js   
-包含一個 DashboardComponent 類別 (Class)，控制整體網頁的觸發事件 (EventListener)，子類別又包含了 CardView, MapComponent 與 Request 三個類別，因此本類別控制及呼叫其他子類別的函式執行，是整體程式的大框架。    
+包含一個 DashboardComponent 類別 (Class)，控制整體網頁的觸發事件 (EventListener)，子類別又包含了 CardView, MapComponent 與 Request 三個類別，因此本類別控制及呼叫其他子類別的函式執行，是整體程式的大框架    
 
 3.  CardView.js   
 包含一個 CardView 類別，控制資料面板的顯示與隱藏，以及更新資料版面(Update)    
@@ -27,6 +27,11 @@
 3.  設定參數後按下 Query 等待資料繪製    
 4.  得出資料後能夠在結果上 Hover 觀看其單一路線圖   
 
+
+#### 使用套件
+1.  OpenLayers    
+2.  BootStrap   
+3.  jQuery    
 
 #### 參考資料
 中國土木水利工程學會會刊第30期  颱風搜    
