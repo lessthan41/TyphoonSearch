@@ -28,11 +28,24 @@
       <span class="sr-only">Loading...</span>
     </div>
 
+    <!-- Side Nav -->
+    <div id="mySidenav" class="sidenav">
+      <div id=fish><i class="fas fa-fish"></i></div>
+      <div class="sidenavTitle" onclick="dashboard.card.closeNav()" id=manual>
+        <a href="javascript:void(0);">Manual</a>
+      </div>
+      <div class="sidenavTitle" onclick="dashboard.card.closeNav()" id=center>
+        <a href="javascript:void(0);">Center</a>
+      </div>
+    </div>
+    <!-- open the sidenav -->
+    <span id=navicon onclick="dashboard.card.openNav()"><i class="fas fa-bars"></i></span>
+
     <!-- map -->
-    <div id="map"></div>
+    <div id="map" onclick="dashboard.card.closeNav()"></div>
 
     <!-- Query Card -->
-    <div class="card" id=card1>
+    <div class="card" id=card1 onclick="dashboard.card.closeNav()">
       <div class="card-body">
         <div class="Sliderdiv">
           <div id=slidebartext>Buffer Radius : <span id=slidebarvalue>50</span> km</div>
@@ -49,12 +62,18 @@
                 <th scope="col">Radi</th>
               </tr>
             </thead>
-            <tbody id=tBody>
-            </tbody>
+            <tbody id=tBody></tbody>
           </table>
         </div>
-        <div id=maxpoints>
-          Reach Max Points Number Limit.
+        <div id=undertable>
+          <div id=maxpointstext>
+            Reach Max Points Number Limit.
+          </div>
+          <div id=addRowBtnDiv>
+            <button type="button" class="btn btn-outline-secondary" id=addRowBtn>
+              <i class="fas fa-plus"></i> Add row
+            </button>
+          </div>
         </div>
         <!----------------------------------------------------->
         <form id=form>
@@ -90,7 +109,7 @@
 
     <!----------------------------------------------------->
     <!-- Result Card -->
-    <div class="card" id=card2>
+    <div class="card" id=card2 onclick="dashboard.card.closeNav()">
       <div class="card-body" id=card2body>
       </div>
     </div>

@@ -5,29 +5,24 @@
 class Request {
   constructor() {
     this.getData = null;
+    this.GET_request = null;
   }
 
   /* get data via ajax */
-  get(url) {
-    return $.ajax({ // return to use done
-        method: 'GET',
-        url: url,
-        dataType: 'json'
+  get(url='/typhoon_forecast', toPOST='') {
+
+    if (toPOST != '') {
+      url = url + '?toPOST=' + toPOST
+    }
+
+    this.GET_request = $.ajax({ // return to use done
+        method: "GET",
+        url: url
       })
       .done((get) => {
         this.getData = get;
       });
-  }
-
-  /* post data via ajax */
-  post(toPOST, url) {
-    return $.ajax({
-      method: 'POST',
-      url: url,
-      data: JSON.stringify(toPOST), // You have to Stringify TWICE
-      dataType: 'json',
-      contentType: "application/json; charset=utf-8"
-    });
+    return this.GET_request;
   }
 
   /* LonLat to LatLon, to JSON */
@@ -66,6 +61,7 @@ class Request {
     return ret;
   }
 
+  /* Check if input no wrong */
   postCheck() {
     let wboolean = true;
     let nboolean = true;

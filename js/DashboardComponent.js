@@ -14,8 +14,10 @@ class DashboardComponent {
 
   init() {
     this.mapInit();
+    this.cardInit();
     this.clearBtnOnClick();
     this.slideBarOnInput();
+    this.latlngOnChange();
     this.mapOnClick();
     this.queryOnClick();
     this.switchOnClick();
@@ -24,6 +26,11 @@ class DashboardComponent {
   /* init */
   mapInit() {
     this.map.render();
+  }
+
+  cardInit() {
+    this.card.initTr();
+    this.card.initNav();
   }
 
   /* ClearBtn Onclick */
@@ -48,6 +55,24 @@ class DashboardComponent {
     });
   }
 
+  /* latlng OnChange */
+  latlngOnChange() {
+    $('.latlngInput').each(function() {
+      let elem = $(this);
+      let lat = $(this).closest('tr').find('.latlngInput:first');
+      let lon = $(this).closest('tr').find('.latlngInput:last');
+      elem.change(function(){
+        // if(elem.val() != undefined && ){
+        //   console.log('done!');
+        //   console.log(elem.parent().siblings().val());
+        // } else {
+        //   console.log(elem.val());
+        //   console.log(elem.siblings().val());
+        // }
+      });
+    });
+  }
+
   /* Map Onclick */
   mapOnClick() {
     let coor;
@@ -68,6 +93,7 @@ class DashboardComponent {
         };
         this.map.addMarker();
         this.card.addTr(coor, rowCount);
+        this.latlngOnChange(); // Add Onchange Event
         this.card.slidebarMinValueControl(this.mapHaveClicked);
         this.mapHaveClicked = true;
       }, 10);
@@ -88,30 +114,27 @@ class DashboardComponent {
         radius.push(this.map.bufferRadius);
         toPOST = this.query.wrap(coor, radius);
         toPOST = JSON.stringify(toPOST);
-        this.query.post(toPOST, '/route_sorting')
-          .done(() => { // POST
-            console.log('POST success');
+
+        console.log(toPOST);
+
+        this.query.get('/route_sorting', toPOST)
+          .done((get) => { // GET Success
+            console.log('GET success');
+            console.log(this.query.getData);
+            this.map.plotData(this.query.getData);
             setTimeout(() => {
-
-              this.query.get('/route_sorting')
-                .done((get) => { // GET
-                  console.log('GET success');
-                  console.log(this.query.getData);
-                  this.map.plotData(this.query.getData);
-                  setTimeout(() => {
-                    this.card.disOnload();
-                    this.card.showResultCard(this.query.getData);
-                    this.resultOnHover(this.switchCondition);
-                  }, 1000);
-                  return;
-                })
-                .fail(() => {
-                  alert('Query Error, Please Try Again');
-                  this.card.disOnload();
-                });
-
-            }, 20);
-
+              this.card.disOnload();
+              this.card.showResultCard(this.query.getData);
+              this.resultOnHover(this.switchCondition);
+            }, 1000);
+            return;
+          })
+          .fail(() => { // GET Failed
+            setTimeout(() => {
+              console.log('GET failed');
+              alert('Query Abort, Please Try Again');
+              this.card.disOnload();
+            }, 100);
           });
       }
     });

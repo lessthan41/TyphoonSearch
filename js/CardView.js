@@ -8,6 +8,8 @@ class CardView {
     this.resultTableExist = false;
     this.switchCondition = 'Sun';
     this.hoverEvent = null;
+    this.navOpen = false;
+    this.navClose = false;
   }
 
   trRadiusControl(value) {
@@ -24,28 +26,75 @@ class CardView {
     $('#slidebar').attr('min', $('#slidebar').val());
   }
 
-  addTr(coor, rowCount) {
-    coor = ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
-    coor[0] = Math.round(coor[0] * 1000) / 1000;
-    coor[1] = Math.round(coor[1] * 1000) / 1000;
+  /* for Clear Btn */
+  initTr() {
+    $('#tBody tr').remove();
     $('#tBody')
       .append($('<tr>')
         .append($('<td>')
-          .html(this.tableRowCount))
+          .html(this.tableRowCount)
+        )
+        .append($('<td>').attr('class', 'inputTd')
+          .append($('<input>')
+            .attr('class', 'form-control latlngInput')
+            .attr('placeholder', 'Lat')
+            .css('width', '83px')
+          )
+        )
+        .append($('<td>').attr('class', 'inputTd')
+          .append($('<input>')
+            .attr('class', 'form-control latlngInput')
+            .attr('placeholder', 'Lon')
+            .css('width', '83px')
+          )
+        )
         .append($('<td>')
-          .html(coor[1]))
+          .html($('#slidebarvalue').text() + 'km')
+        )
+      );
+  }
+
+  addTr(coor) {
+
+    if(this.tableRowCount == 1) {
+      $('#tBody tr').remove();
+    }
+
+    coor = ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
+    coor[0] = Math.round(coor[0] * 1000) / 1000;
+    coor[1] = Math.round(coor[1] * 1000) / 1000;
+
+    $('#tBody')
+      .append($('<tr>')
         .append($('<td>')
-          .html(coor[0]))
+          .html(this.tableRowCount)
+        )
+        .append($('<td>').attr('class', 'inputTd')
+          .append($('<input>')
+            .attr('class', 'form-control latlngInput')
+            .attr('placeholder', 'Lat')
+            .attr('value', coor[1])
+            .css('width', '83px')
+          )
+        )
+        .append($('<td>').attr('class', 'inputTd')
+          .append($('<input>')
+            .attr('class', 'form-control latlngInput')
+            .attr('placeholder', 'Lon')
+            .attr('value', coor[0])
+            .css('width', '83px')
+          )
+        )
         .append($('<td>')
-          .html($('#slidebarvalue').text() + 'km')));
+          .html($('#slidebarvalue').text() + 'km')
+        )
+      );
     this.tableRowCount++;
   }
 
   removeRecord(initial) {
     this.tableRowCount = 1;
-    // $('#card1').css('max-height', '358.2px');
-    // setTimeout(() => {
-    $('#tBody tr').remove();
+    this.initTr();
     $('#slidebar').attr('min', 1);
     $('#slidebar').val(initial);
     $('#slidebarvalue').html(initial);
@@ -59,16 +108,15 @@ class CardView {
 
     this.hideWarning();
 
-    // }, 300);
   }
 
   /* Tr warning */
   showWarning() {
-    $('#maxpoints').css('visibility', 'visible');
+    $('#maxpointstext').css('visibility', 'visible');
   }
 
   hideWarning() {
-    $('#maxpoints').css('visibility', 'hidden');
+    $('#maxpointstext').css('visibility', 'hidden');
   }
 
   /* Query Onclick Show Result Card */
@@ -80,7 +128,7 @@ class CardView {
       $('<table>').attr('class', 'table').attr('id', 'resultTable').css('color', 'white');
     this.expandResultCard();
 
-    if(!this.resultTableExist) { // thead does not Exist
+    if (!this.resultTableExist) { // thead does not Exist
       $('#card2body').append(tableColor
         .append($('<thead>')
           .append($('<tr>')
@@ -94,7 +142,7 @@ class CardView {
     $('#card2').css('overflow-y', 'scroll');
     $('#resultTbody tr').remove(); // Clear Table
 
-    for(var i in data){
+    for (var i in data) {
       $('#resultTbody')
         .append($('<tr>')
           .append($('<td>').html(i))
@@ -108,7 +156,7 @@ class CardView {
   /* Clear Onclick Hide Result Card */
   hideResultCard() {
 
-    if(this.resultTableExist) { // thead does not Exist
+    if (this.resultTableExist) { // thead does not Exist
       $('#resultTable').remove();
       this.resultTableExist = false;
     };
@@ -117,7 +165,7 @@ class CardView {
   }
 
   /* Expand Result Card */
-  expandResultCard () {
+  expandResultCard() {
     $('#card2').css('visibility', 'visible');
     $('#card2').css('width', '400px');
     setTimeout(function() {
@@ -126,7 +174,7 @@ class CardView {
   }
 
   /* Shrimp Result Card */
-  shrimpResultCard () {
+  shrimpResultCard() {
     $('#card2').css('height', '10px');
     setTimeout(function() {
       $('#card2').css('width', '0px');
@@ -145,14 +193,14 @@ class CardView {
   disOnload() {
     $('#drawBgcolor').css('opacity', '0');
     $('.spinner-grow').css('opacity', '0');
-    setTimeout( () => {
+    setTimeout(() => {
       $('#drawBgcolor').css('display', 'none');
       $('.spinner-grow').css('display', 'none');
     }, 800);
   }
 
   /* Sun or Moon Btn */
-  btnSwitch (btncase) {
+  btnSwitch(btncase) {
     switch (btncase) {
       case 'Moon':
         $('.fa-sun').css('display', 'unset');
@@ -167,7 +215,7 @@ class CardView {
   }
 
   /* CSS View Change between Sun and Moon */
-  SunMoon (sunOrMoon) {
+  SunMoon(sunOrMoon) {
     this.switchCondition = sunOrMoon;
     let onloadColor = sunOrMoon == 'Sun' ? '#fcfcfca1' : '#00000098';
     let cardColor = sunOrMoon == 'Sun' ? 'white' : '#4c4c4c';
@@ -184,6 +232,35 @@ class CardView {
     $('.card').css('box-shadow', boxShadow);
     $('#drawBgcolor').css('background-color', onloadColor);
     $('#resultTbody tr').css('background-color', cardColor);
+  }
+
+  /* Side Nav */
+  initNav() {
+    $('#navicon').on( "mouseover", () => {
+      setTimeout(() => { this.openNav(); }, 150);
+    });
+
+    $('#mySidenav').on( "mouseleave", () => {
+      setTimeout(() => { this.closeNav(); }, 150);
+    });
+  }
+
+  openNav() {
+    if(this.navClose == true){
+      return;
+    }
+    this.navOpen = true;
+    document.getElementById('mySidenav').style.width = '250px';
+    setTimeout(() => {this.navOpen = false;}, 200);
+  }
+
+  closeNav() {
+    if(this.navOpen == true){
+      return;
+    }
+    this.navClose = true;
+    document.getElementById('mySidenav').style.width = '0px';
+    setTimeout(() => {this.navClose = false;}, 200);
   }
 
 }

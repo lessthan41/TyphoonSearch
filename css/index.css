@@ -19,8 +19,8 @@ body {
   background-color: #fcfcfca1;
   opacity: 0;
   display: none;
-  transition: .8s ease-in-out;
-  z-index: 3;
+  transition: opacity .8s ease-in-out;
+  z-index: 5;
 }
 
 .spinner-grow {
@@ -36,9 +36,88 @@ body {
   height: 4rem;
   display: none;
   transition: .8s ease-in-out;
-  z-index: 4;
+  z-index: 6;
+}
+/* ---------------------------------------------------- */
+/* Side Navbar */
+#navicon{
+  position: fixed;
+  margin-left: 44px;
+  margin-top: 10px;
+  z-index: 2;
+  color: rgba(0,60,136,.5);
+  border-style: solid;
+  padding: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+#navicon i{
+  font-size: 20px;
+}
+#navicon:hover{
+  background-color: rgba(0,60,136,.3);
+  transition: .25s;
 }
 
+/* The side navigation menu */
+.sidenav {
+  height: 100%;
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed;
+  z-index: 3;
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #eaeaea;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px;
+  transition: .75s;
+  box-shadow: 1px 1px 4px #adb1a9
+}
+
+/* The navigation menu links */
+.sidenav a {
+  width: fit-content;
+  margin: auto;
+  padding: 13px 0px 13px 0px;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: bold;
+  color: #6d6363;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #cbcfd0;
+}
+
+#fish{
+  top: 10px;
+  text-align: center;
+  font-size: xx-large;
+  margin-bottom: 30px;
+}
+.fa-fish{
+  border-style: solid;
+  padding: 7px;
+  border-color: #3b4249;
+  color: #3b4249;
+  border-width: 5px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s;
+  padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+/* ---------------------------------------------------- */
 /* Map */
 #map {
   height: 100vh;
@@ -146,14 +225,40 @@ background: rgb(219,219,219);
   margin-bottom: unset;
   text-align: center;
 }
-#maxpoints {
-  padding: 0px 5px 2px 5px;
-  text-align: right;
+td.inputTd { /* Lat Lon td */
+  padding: 0.45rem 0.55rem 0.45rem 0.55rem;
+  text-align: center;
+}
+td.radiusTd { /* Radius td */
+  width: 85px;
+}
+.latlngInput { /* Lat Lon input */
+  width: 83px;
+  height: 30px;
+  margin: auto;
+}
+td ::-webkit-input-placeholder {
+   text-align: center;
+}
+#undertable {
+  padding: 3px 5px 2px 5px;
+  display: flex;
+  justify-content: space-between;
+}
+#maxpointstext {
+  text-align: left;
   color: red;
+  vertical-align: middle;
+  line-height: 24px;
   visibility: hidden;
 }
+#addRowBtn{
+  height: 24px;
+  font-size: inherit;
+  padding: 0px 5px 0px 5px;
+}
 
-/* Input */
+/* Parameter Input */
 #form {
   margin-bottom: 10px;
 }
