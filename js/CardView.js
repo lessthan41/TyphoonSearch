@@ -186,7 +186,6 @@ class CardView {
   /* Query Onclick Show Result Card */
   showResultCard(data) {
 
-    let name, ret;
     let tableColor = this.switchCondition == 'Sun' ?
       $('<table>').attr('class', 'table').attr('id', 'resultTable') :
       $('<table>').attr('class', 'table').attr('id', 'resultTable').css('color', 'white');
@@ -205,12 +204,19 @@ class CardView {
 
     $('#card2').css('overflow-y', 'scroll');
     $('#resultTbody tr').remove(); // Clear Table
+    console.log(123);
 
     for (var i in data) {
       $('#resultTbody')
         .append($('<tr>')
           .append($('<td>').html(i))
-          .append($('<td>').html(data[i]['name']))
+          .append($('<td>')
+            .append($('<a>')
+              .attr('href', data[i]['links'])
+              .attr('target', '_blank')
+              .html(data[i]['name'])
+            )
+          )
           .append($('<td>').html(data[i]['id'])));
     };
 

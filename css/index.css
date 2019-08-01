@@ -179,6 +179,18 @@ body {
   transition: .3s ease-in-out;
   z-index: 4;
 }
+#card2 a {
+  color: #3936a9;
+}
+#card2 a:hover {
+  color: #524ed5;
+  text-decoration: blink;
+  transition: color .25s ease-in-out,
+    background-color .25s ease-in-out,
+    border-color .25s ease-in-out,
+    box-shadow .25s ease-in-out,
+    text-decoration .25s ease-in-out;
+}
 /* ---------------------------------------------------- */
 /* Scroll bar */
 ::-webkit-scrollbar {

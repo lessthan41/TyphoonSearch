@@ -126,6 +126,7 @@ class DashboardComponent {
           return;
         };
         this.map.coorContainer.push( this.map.getMousePosition() );
+        this.map.bufferRadius = parseInt($('#slidebarvalue').html()) * 1000;
         this.map.addMarker();
         coor = this.map.TM2toLatLon(coor); // coor transform
         this.card.addTr(coor);
@@ -155,6 +156,15 @@ class DashboardComponent {
       this.card.rmTr();
       this.card.hideWarning();
 
+      // console.log('adjust slidebar');
+      if(this.card.tableRowCount == 1) {
+        this.card.slidebarMinValueControl(true, 1);
+        this.mapHaveClicked = false;
+      } else {
+        this.card.slidebarMinValueControl(true, parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()));
+      }
+      this.card.trRadiusControl(parseInt($('#tBody td:last').text()));
+
       // if both match number then delete from this.map.coorContainer
       if (lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)){
         if(lastLon.match(/^[0-9]+.[0-9]+$/) | lastLon.match(/^[0-9]+$/)) {
@@ -168,14 +178,6 @@ class DashboardComponent {
 
           // console.log(this.map.bufferRadius);
           // console.log(this.map.fixRadiusContainer);
-
-          // console.log('adjust slidebar');
-          if(this.card.tableRowCount == 1) {
-            this.card.slidebarMinValueControl(true, 0);
-          } else {
-            this.card.slidebarMinValueControl(true, parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()));
-          }
-          this.card.trRadiusControl(parseInt($('#tBody td:last').text()));
 
         }
       }
@@ -197,10 +199,8 @@ class DashboardComponent {
         toPOST = this.query.wrap(coor, radius);
         toPOST = JSON.stringify(toPOST);
 
-        console.log(toPOST);
-
         this.query.get('/route_sorting', toPOST)
-          .done((get) => { // GET Success
+          .done(() => { // GET Success
             console.log('GET success');
             console.log(this.query.getData);
             this.map.plotData(this.query.getData);
