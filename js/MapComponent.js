@@ -119,12 +119,15 @@ class MapComponent {
   }
 
   /* Add Pointer */
-  addMarker () {
+  addMarker (dontAddFixBuffer = false) {
     setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
       this.addPoint(this.coorContainer);
       this.addLine(this.coorContainer);
       this.addBuffer(this.coorContainer);
       this.addFixBuffer(this.coorContainer);
+      if (dontAddFixBuffer) { // if Dont need to add fix buffer (just plot) then pop()
+        this.fixRadiusContainer.pop();
+      }
     }, 10);
   }
 

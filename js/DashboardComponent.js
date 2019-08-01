@@ -125,12 +125,15 @@ class DashboardComponent {
           this.card.showWarning();
           return;
         };
+
         this.map.coorContainer.push( this.map.getMousePosition() );
         this.map.bufferRadius = parseInt($('#slidebarvalue').html()) * 1000;
         this.map.addMarker();
         coor = this.map.TM2toLatLon(coor); // coor transform
         this.card.addTr(coor);
         this.latlonOnChange(); // Add Onchange Event
+        console.log($('#slidebar').val());
+        console.log(this.mapHaveClicked);
         this.card.slidebarMinValueControl(this.mapHaveClicked, $('#slidebar').val());
         this.mapHaveClicked = true;
       }, 10);
@@ -153,13 +156,14 @@ class DashboardComponent {
     $('#cutRowBtn').on('click', () => {
       let lastLat = $('#tBody tr:last .latlonInput:first').val();
       let lastLon = $('#tBody tr:last .latlonInput:last').val();
+      this.mapHaveClicked = this.card.tableRowCount == 1 ? false : true;
+
       this.card.rmTr();
       this.card.hideWarning();
 
       // console.log('adjust slidebar');
       if(this.card.tableRowCount == 1) {
         this.card.slidebarMinValueControl(true, 1);
-        this.mapHaveClicked = false;
       } else {
         this.card.slidebarMinValueControl(true, parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()));
       }
@@ -169,12 +173,13 @@ class DashboardComponent {
       if (lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)){
         if(lastLon.match(/^[0-9]+.[0-9]+$/) | lastLon.match(/^[0-9]+$/)) {
           let radius = parseInt($('#tBody td:last').text()) * 1000; // Unit: m
+          let dontAddFixBuffer = true;
 
           // console.log('delete coor from map');
           this.map.coorContainer.pop();
           this.map.bufferRadius = radius; // Replace newest point radius
           this.map.fixRadiusContainer.splice(this.card.tableRowCount-1); // Rm fixRadius
-          this.map.addMarker();
+          this.map.addMarker(dontAddFixBuffer);
 
           // console.log(this.map.bufferRadius);
           // console.log(this.map.fixRadiusContainer);
