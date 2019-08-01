@@ -170,7 +170,7 @@ class DashboardComponent {
           // console.log(this.map.fixRadiusContainer);
 
           // console.log('adjust slidebar');
-          if(this.card.tableRowCount <= 2) {
+          if(this.card.tableRowCount == 1) {
             this.card.slidebarMinValueControl(true, 0);
           } else {
             this.card.slidebarMinValueControl(true, parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()));
