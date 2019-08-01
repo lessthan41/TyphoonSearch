@@ -4,6 +4,7 @@
  */
 class CardView {
   constructor() {
+    this.slideBarValue = 50; // radius slidebar start from 50km
     this.tableRowCount = 1;
     this.resultTableExist = false;
     this.switchCondition = 'Sun';
@@ -12,18 +13,26 @@ class CardView {
     this.navClose = false;
   }
 
+  init() {
+    this.initTr();
+    this.initNav();
+  }
+
   trRadiusControl(value) {
     $('#slidebarvalue').html(value);
+
     if ($('#tBody tr').length != 0) { // if table have row
-      $('#tBody td:last').html(value + 'km'); // changing last td(newest radius)
+      // $('#tBody tr').find('td:last').html(value + 'km')
+      $('#slidebar').val(value);
+      $('#tBody td:last div').html(value + 'km'); // changing last td(newest radius)
     }
   }
 
-  slidebarMinValueControl(mapHaveClicked) {
+  slidebarMinValueControl(mapHaveClicked, toSetValue) {
     if (!mapHaveClicked) {
       return;
     } // Map on First Click no need to Function
-    $('#slidebar').attr('min', $('#slidebar').val());
+    $('#slidebar').attr('min', toSetValue);
   }
 
   /* for Clear Btn */
@@ -35,34 +44,61 @@ class CardView {
           .html(this.tableRowCount)
         )
         .append($('<td>').attr('class', 'inputTd')
-          .append($('<input>')
-            .attr('class', 'form-control latlngInput')
-            .attr('placeholder', 'Lat')
-            .css('width', '83px')
+          .append($('<div>').attr('class', 'latlonCenterDiv')
+            .append($('<input>')
+              .attr('class', 'form-control latlonInput')
+              .attr('placeholder', 'Lat')
+              .css('width', '83px')
+              .css('height', '30px')
+            )
           )
         )
         .append($('<td>').attr('class', 'inputTd')
-          .append($('<input>')
-            .attr('class', 'form-control latlngInput')
-            .attr('placeholder', 'Lon')
-            .css('width', '83px')
+          .append($('<div>').attr('class', 'latlonCenterDiv')
+            .append($('<input>')
+              .attr('class', 'form-control latlonInput')
+              .attr('placeholder', 'Lon')
+              .css('width', '83px')
+              .css('height', '30px')
+            )
           )
         )
         .append($('<td>')
-          .html($('#slidebarvalue').text() + 'km')
+          .append($('<div>').attr('class', 'radiusTdDiv')
+            .html($('#slidebarvalue').text() + 'km')
+          )
         )
       );
   }
 
+  /* Transform coor from TM2(m) to latlon and addTr */
   addTr(coor) {
 
-    if(this.tableRowCount == 1) {
-      $('#tBody tr').remove();
+    if (this.tableRowCount >= 7) { // Max Points Show Warning and Return
+      this.showWarning();
+      return;
+    };
+
+    this.tableRowCount++;
+    let lastLat = $('#tBody tr:last .latlonInput:first').val();
+    let lastLon = $('#tBody tr:last .latlonInput:last').val();
+
+    if(lastLon == '' | lastLat == '') { // if Last tr is blank
+      this.tableRowCount--;
+      if(coor[0] == '' && coor[1] == '') { // if Add Row Return
+        return;
+      } else { // if mapOnClick add
+        $('#tBody tr:last').remove();
+      }
     }
 
-    coor = ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
     coor[0] = Math.round(coor[0] * 1000) / 1000;
     coor[1] = Math.round(coor[1] * 1000) / 1000;
+
+    if(coor[0] == 0 && coor[1] == 0) {
+      coor[0] = '';
+      coor[1] = '';
+    }
 
     $('#tBody')
       .append($('<tr>')
@@ -70,26 +106,53 @@ class CardView {
           .html(this.tableRowCount)
         )
         .append($('<td>').attr('class', 'inputTd')
-          .append($('<input>')
-            .attr('class', 'form-control latlngInput')
-            .attr('placeholder', 'Lat')
-            .attr('value', coor[1])
-            .css('width', '83px')
+          .append($('<div>').attr('class', 'latlonCenterDiv')
+            .append($('<input>')
+              .attr('class', 'form-control latlonInput')
+              .attr('placeholder', 'Lat')
+              .attr('value', coor[1])
+              .css('width', '83px')
+              .css('height', '30px')
+            )
           )
         )
         .append($('<td>').attr('class', 'inputTd')
-          .append($('<input>')
-            .attr('class', 'form-control latlngInput')
-            .attr('placeholder', 'Lon')
-            .attr('value', coor[0])
-            .css('width', '83px')
+          .append($('<div>').attr('class', 'latlonCenterDiv')
+            .append($('<input>')
+              .attr('class', 'form-control latlonInput')
+              .attr('placeholder', 'Lon')
+              .attr('value', coor[0])
+              .css('width', '83px')
+              .css('height', '30px')
+            )
           )
         )
         .append($('<td>')
-          .html($('#slidebarvalue').text() + 'km')
+          .append($('<div>').attr('class', 'radiusTdDiv')
+            .html($('#slidebarvalue').text() + 'km')
+          )
         )
       );
-    this.tableRowCount++;
+  }
+
+  rmTr() {
+    if(this.tableRowCount == 1) {
+      $('#tBody tr:last .latlonInput:first').val('');
+      $('#tBody tr:last .latlonInput:last').val('');
+      return;
+    }
+
+    this.tableRowCount--;
+    $('#tBody tr:last').remove();
+  }
+
+  /* Change latlon input bgcolor */
+  latlonInputError(elem) {
+    elem.css('background-color', 'rgb(232, 226, 228)')
+  }
+
+  latlonInputOK(elem) {
+    elem.css('background-color', '#fff')
   }
 
   removeRecord(initial) {
@@ -104,8 +167,9 @@ class CardView {
     $('#wSmall').css('visibility', 'hidden');
     $('#nSmall').css('visibility', 'hidden');
     $('#mSmall').css('visibility', 'hidden');
-    $('#card1').css('max-height', '400px');
+    $('#card1').css('max-height', '430px');
 
+    this.trRadiusControl(50);
     this.hideWarning();
 
   }
@@ -222,6 +286,12 @@ class CardView {
     let spinColor = sunOrMoon == 'Sun' ? 'black' : 'white';
     let fontColor = sunOrMoon == 'Sun' ? 'black' : '#ece6f8';
     let boxShadow = sunOrMoon == 'Sun' ? '1px 1px 5px #728e97' : '1px 1px 5px #6e6e6e';
+    let inputColor = sunOrMoon == 'Sun' ? '#FFF' : '#f6f1f1';
+    let addcutRowFontColor = sunOrMoon == 'Sun' ? '#6c757d' : '#d8d8d8';
+    let addcutRowFontHover = '#ffffff';
+    let addcutRowBorderColor = sunOrMoon == 'Sun' ? '#848f98' : '#d8d8d8';
+    let navIcon = sunOrMoon == 'Sun' ? '#003c8880' : '#ffffff99';
+    let sidenav = sunOrMoon == 'Sun' ? '#eaeaea' : '#bbbbbb';
     this.btnSwitch(sunOrMoon);
     $('.card').css('background-color', cardColor);
     $('.spinner-grow').css('color', spinColor);
@@ -232,6 +302,16 @@ class CardView {
     $('.card').css('box-shadow', boxShadow);
     $('#drawBgcolor').css('background-color', onloadColor);
     $('#resultTbody tr').css('background-color', cardColor);
+    $('.form-control').css('background-color', inputColor);
+    $('.btn-outline-secondary').css('color', addcutRowFontColor);
+    $('.btn-outline-secondary').css('border-color', addcutRowBorderColor);
+    $('.btn-outline-secondary').mouseover(function() {
+      $(this).css('color', addcutRowFontHover);
+    }).mouseout(function() {
+      $(this).css('color', addcutRowFontColor);
+    });
+    $('#navicon').css('color', navIcon);
+    $('.sidenav').css('background-color', sidenav);
   }
 
   /* Side Nav */

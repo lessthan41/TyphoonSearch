@@ -3,14 +3,12 @@ body {
   font-size: 14px;
   line-height: 16px;
 }
-
-/* 框架 */
 .Outerdiv{
   display: flex;
   height: 100vh;
   width: 100vw;
 }
-
+/* ---------------------------------------------------- */
 /* Onload */
 #drawBgcolor {
   position: fixed;
@@ -22,7 +20,6 @@ body {
   transition: opacity .8s ease-in-out;
   z-index: 5;
 }
-
 .spinner-grow {
   position: fixed;
   color: black;
@@ -58,7 +55,6 @@ body {
   background-color: rgba(0,60,136,.3);
   transition: .25s;
 }
-
 /* The side navigation menu */
 .sidenav {
   height: 100%;
@@ -73,7 +69,6 @@ body {
   transition: .75s;
   box-shadow: 1px 1px 4px #adb1a9
 }
-
 /* The navigation menu links */
 .sidenav a {
   width: fit-content;
@@ -86,33 +81,27 @@ body {
   display: block;
   transition: 0.3s;
 }
-
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover {
   color: #cbcfd0;
 }
-
 #fish{
   top: 10px;
   text-align: center;
   font-size: xx-large;
   margin-bottom: 30px;
 }
-.fa-fish{
+.fa-search{
   border-style: solid;
   padding: 7px;
   border-color: #3b4249;
   color: #3b4249;
   border-width: 5px;
 }
-
-/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
   transition: margin-left .5s;
   padding: 20px;
 }
-
-/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
@@ -124,7 +113,7 @@ body {
   width: 100vw;
   z-index: 1;
 }
-
+/* ---------------------------------------------------- */
 /* Right */
 #switchBtn, #card1 {
   position: absolute;
@@ -148,7 +137,7 @@ body {
   color: #ffffff;
   box-shadow: 0.5px 0.5px 10px #ffffff;
 }
-
+/* ---------------------------------------------------- */
 /* Left */
 #detail {
   position: absolute;
@@ -160,8 +149,8 @@ body {
   bottom: 5px;
   left: 90px;
 }
-
-/* Card */
+/* ---------------------------------------------------- */
+/* Card1 */
 #card1 {
   margin: 10px 1px 0px 0px;
   padding-bottom: 0px;
@@ -169,16 +158,17 @@ body {
   /* clear: both; */
   float: right;
   box-shadow: 1px 1px 5px #728e97;
-  max-height: 400px;
+  max-height: 415px;
   overflow-y: scroll;
   transition: .3s ease-in-out;
   z-index: 4;
 }
-
+/* ---------------------------------------------------- */
+/* Card2 */
 #card2 {
   position: fixed;
   right: 10px;
-  top: 420px;
+  top: 450px;
   visibility: hidden;
   box-shadow: 1px 1px 5px #728e97;
   width: 0px;
@@ -187,27 +177,25 @@ body {
   overflow-x: hidden;
   padding: 0.75rem 0.5rem 0.75rem 0.5rem;
   transition: .3s ease-in-out;
-  /* height: 300px; */
-  /* width: 330px; */
   max-height: 460px;
   z-index: 4;
 }
-
+/* ---------------------------------------------------- */
 /* Scroll bar */
 ::-webkit-scrollbar {
-width: 7px;
+  width: 7px;
 }
 ::-webkit-scrollbar-track {
--webkit-border-radius: 10px;
-border-radius: 10px;
-margin:5px 0 5px 0;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  margin:5px 0 5px 0;
 }
 ::-webkit-scrollbar-thumb {
--webkit-border-radius: 4px;
-border-radius: 4px;
-background: rgb(219,219,219);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  background: rgb(219,219,219);
 }
-
+/* ---------------------------------------------------- */
 /* Slide bar */
 .Sliderdiv {
   padding: 5px;
@@ -215,7 +203,7 @@ background: rgb(219,219,219);
 #slidebartext {
   margin-bottom: 5px;
 }
-
+/* ---------------------------------------------------- */
 /* Table */
 .tablediv {
   text-align: center;
@@ -232,16 +220,22 @@ td.inputTd { /* Lat Lon td */
 td.radiusTd { /* Radius td */
   width: 85px;
 }
-.latlngInput { /* Lat Lon input */
-  width: 83px;
-  height: 30px;
-  margin: auto;
+.radiusTdDiv{ /* Radius position */
+  width: 50px;
+}
+.latlonCenterDiv { /* Lat Lon input position */
+  margin: 0 auto;
+  width: fit-content;
 }
 td ::-webkit-input-placeholder {
    text-align: center;
 }
 #undertable {
-  padding: 3px 5px 2px 5px;
+  padding: 3px 2px 2px 9px;
+  display: flex;
+  justify-content: space-between;
+}
+.trBtnDiv {
   display: flex;
   justify-content: space-between;
 }
@@ -252,12 +246,15 @@ td ::-webkit-input-placeholder {
   line-height: 24px;
   visibility: hidden;
 }
-#addRowBtn{
+.btn-outline-secondary {
   height: 24px;
   font-size: inherit;
   padding: 0px 5px 0px 5px;
+  border-color: #848f98;
+  margin-right: 10px;
 }
 
+/* ---------------------------------------------------- */
 /* Parameter Input */
 #form {
   margin-bottom: 10px;
@@ -283,7 +280,7 @@ td ::-webkit-input-placeholder {
   padding-right: 16px;
   visibility: hidden;
 }
-
+/* ---------------------------------------------------- */
 /* Btn */
 #btnDiv {
   float: right;

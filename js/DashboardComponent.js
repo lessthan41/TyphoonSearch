@@ -15,9 +15,11 @@ class DashboardComponent {
   init() {
     this.mapInit();
     this.cardInit();
+    this.latlonOnChange();
+    this.addRowBtnOnClick();
+    this.cutRowBtnOnClick();
     this.clearBtnOnClick();
     this.slideBarOnInput();
-    this.latlngOnChange();
     this.mapOnClick();
     this.queryOnClick();
     this.switchOnClick();
@@ -25,12 +27,11 @@ class DashboardComponent {
 
   /* init */
   mapInit() {
-    this.map.render();
+    this.map.init();
   }
 
   cardInit() {
-    this.card.initTr();
-    this.card.initNav();
+    this.card.init();
   }
 
   /* ClearBtn Onclick */
@@ -40,6 +41,7 @@ class DashboardComponent {
       this.mapHaveClicked = false;
       this.map.removeMarker();
       this.card.removeRecord(initial);
+      this.latlonOnChange();
       this.map.radiusController(initial);
       this.card.hideResultCard();
     })
@@ -47,28 +49,62 @@ class DashboardComponent {
 
   /* Slidebar Oninput */
   slideBarOnInput() {
-    let currentValue;
     $('#slidebar').on('input', () => {
+      let currentValue;
+      let lastLat = $('#tBody tr:last .latlonInput:first').val();
+      let lastLon = $('#tBody tr:last .latlonInput:last').val();
       currentValue = $('#slidebar').val();
-      this.map.radiusController(currentValue);
+
+      if(lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)) {
+        this.map.radiusController(currentValue);
+      }
       this.card.trRadiusControl(currentValue); // change slidebar display value
     });
   }
 
-  /* latlng OnChange */
-  latlngOnChange() {
-    $('.latlngInput').each(function() {
-      let elem = $(this);
-      let lat = $(this).closest('tr').find('.latlngInput:first');
-      let lon = $(this).closest('tr').find('.latlngInput:last');
-      elem.change(function(){
-        // if(elem.val() != undefined && ){
-        //   console.log('done!');
-        //   console.log(elem.parent().siblings().val());
-        // } else {
-        //   console.log(elem.val());
-        //   console.log(elem.siblings().val());
-        // }
+  /* latlon OnChange */
+  latlonOnChange() {
+    $('.latlonInput').each((i, v) => { // Order, this
+      let elem = $(v);
+      elem.on('change', () => {
+
+        if(!elem.val().match(/^\d+\.?\d+$/)) { // if it's not a number
+          this.card.latlonInputError(elem);
+          return;
+        } else {
+          this.card.latlonInputOK(elem);
+        }
+
+        let lat = $(elem).closest('tr').find('.latlonInput:first');
+        let lon = $(elem).closest('tr').find('.latlonInput:last');
+        let order = parseInt($(elem).closest('tr').find('td:first').text());
+        let latboolean = true, lonboolean = true;
+        let coor;
+
+        // Lat Check
+        // Check no Empty Value
+        if (!lat.val().match(/^[0-9]+.[0-9]+$/) && !lat.val().match(/^[0-9]+$/)){
+          this.card.latlonInputError(lat);
+          latboolean = false;
+        } else {
+          this.card.latlonInputOK(lat);
+        }
+
+        // Lon Check
+        if (!lon.val().match(/^[0-9]+.[0-9]+$/) && !lon.val().match(/^[0-9]+$/)) {
+          this.card.latlonInputError(lon);
+          lonboolean = false;
+        } else {
+          this.card.latlonInputOK(lon);
+        }
+
+        // If no problem
+        if (latboolean && lonboolean){
+          console.log('Draw!!');
+          coor = this.map.LatLontoTM2([parseFloat(lon.val()), parseFloat(lat.val())]);
+          this.map.coorContainer[order-1] = coor; // Replace the old coor
+          this.map.addMarker();
+        }
       });
     });
   }
@@ -76,31 +112,77 @@ class DashboardComponent {
   /* Map Onclick */
   mapOnClick() {
     let coor;
-    let rowCount;
     this.map.map.on('click', (evt) => {
       setTimeout(() => { // set time out for smartphone version (no instant mousePosition)
         if (evt.dragging) {
           return;
         } // Dragging event Return
         coor = this.map.getMousePosition();
-        if (isNaN(coor[0])) {
+        if (isNaN(coor[0])) { // Prevent Error
           return;
-        } // Prevent Error
-        rowCount = this.map.coorContainer.length;
-        if (rowCount >= 7) { // Max Points Show Warning and Return
+        }
+        if (this.card.tableRowCount >= 7) { // Max Points Show Warning and Return
           this.card.showWarning();
           return;
         };
+        this.map.coorContainer.push( this.map.getMousePosition() );
         this.map.addMarker();
-        this.card.addTr(coor, rowCount);
-        this.latlngOnChange(); // Add Onchange Event
-        this.card.slidebarMinValueControl(this.mapHaveClicked);
+        coor = this.map.TM2toLatLon(coor); // coor transform
+        this.card.addTr(coor);
+        this.latlonOnChange(); // Add Onchange Event
+        this.card.slidebarMinValueControl(this.mapHaveClicked, $('#slidebar').val());
         this.mapHaveClicked = true;
       }, 10);
     });
   }
 
-  /*  QueryBtn Onclick */
+  /* Addrow Btn Onclick */
+  addRowBtnOnClick() {
+    $('#addRowBtn').on('click', () => {
+      this.card.addTr(['','']);
+      this.latlonOnChange();
+      if(this.card.tableRowCount > 1){
+        this.card.slidebarMinValueControl(true, $('#slidebar').val());
+      }
+    });
+  }
+
+  /* Cutrow Btn Onclick */
+  cutRowBtnOnClick() {
+    $('#cutRowBtn').on('click', () => {
+      let lastLat = $('#tBody tr:last .latlonInput:first').val();
+      let lastLon = $('#tBody tr:last .latlonInput:last').val();
+      this.card.rmTr();
+      this.card.hideWarning();
+
+      // if both match number then delete from this.map.coorContainer
+      if (lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)){
+        if(lastLon.match(/^[0-9]+.[0-9]+$/) | lastLon.match(/^[0-9]+$/)) {
+          let radius = parseInt($('#tBody td:last').text()) * 1000; // Unit: m
+
+          // console.log('delete coor from map');
+          this.map.coorContainer.pop();
+          this.map.bufferRadius = radius; // Replace newest point radius
+          this.map.fixRadiusContainer.splice(this.card.tableRowCount-1); // Rm fixRadius
+          this.map.addMarker();
+
+          // console.log(this.map.bufferRadius);
+          // console.log(this.map.fixRadiusContainer);
+
+          // console.log('adjust slidebar');
+          if(this.card.tableRowCount <= 2) {
+            this.card.slidebarMinValueControl(true, 0);
+          } else {
+            this.card.slidebarMinValueControl(true, parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()));
+          }
+          this.card.trRadiusControl(parseInt($('#tBody td:last').text()));
+
+        }
+      }
+    });
+  }
+
+  /* Query Btn Onclick */
   queryOnClick() {
     let toPOST, coor, radius, toGET, data;
     $('#queryBtn').on('click', () => {

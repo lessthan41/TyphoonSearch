@@ -14,9 +14,9 @@ class MapComponent {
     this.fixBufferLayer = new ol.layer.Vector({});
     this.bufferLayer = new ol.layer.Vector({});
     // this.pointDataLayer = new Array(); // for data points
+    // this.pointDataLayerCount = 0; // Data Points Layers Count
     this.lineDataCoor = new Object(); // for data lines
     this.lineDataStyle = new Array(); // for data lines style
-    this.pointDataLayerCount = 0; // Data Points Layers Count
     this.lineDataLayerCount = 0; // Data Line Layers Count
     this.switchCondition = 'Sun'
     this.mapTile = new ol.layer.Tile({
@@ -90,10 +90,6 @@ class MapComponent {
     ];
   }
 
-  render () {
-    this.init();
-  }
-
   init () {
     this.mousePositionControl = new ol.control.MousePosition({
       coordinateFormat: ol.coordinate.createStringXY(4),
@@ -125,7 +121,6 @@ class MapComponent {
   /* Add Pointer */
   addMarker () {
     setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
-      this.coorContainer.push( this.getMousePosition() );
       this.addPoint(this.coorContainer);
       this.addLine(this.coorContainer);
       this.addBuffer(this.coorContainer);
@@ -151,6 +146,16 @@ class MapComponent {
     let x = parseFloat(currentPosition.substring(0, commaPosition));
     let y = parseFloat(currentPosition.substring(commaPosition+1));
     return [x, y];
+  }
+
+  /* coor from EPSG:3857 to 4326 (latlon to TM2) */
+  LatLontoTM2(coor){
+    return ol.proj.transform(coor, 'EPSG:4326', 'EPSG:3857');
+  }
+
+  /* coor from EPSG:4326 to 3857 (TM2 to latlon) */
+  TM2toLatLon(coor){
+    return ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
   }
 
   /* Add Point */

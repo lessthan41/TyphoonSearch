@@ -66,6 +66,7 @@ class Request {
     let wboolean = true;
     let nboolean = true;
     let mboolean = true;
+    let latlonboolean = true;
     let w = $('#wInput').val();
     let n = $('#nInput').val();
     let month = $('#mInput').val();
@@ -73,6 +74,14 @@ class Request {
     $('#wSmall').css('visibility', 'hidden');
     $('#nSmall').css('visibility', 'hidden');
     $('#mSmall').css('visibility', 'hidden');
+
+    $('.latlonInput').each((i, v) => { // Examine lat lon input
+      let elem = $(v);
+      if(!elem.val().match(/^\d+\.?\d*$/)){
+        latlonboolean = false;
+        return;
+      }
+    });
 
     if (w != '') { // Examine w
       w = parseFloat(w);
@@ -102,9 +111,10 @@ class Request {
       }
     };
 
-    if (wboolean && nboolean && mboolean) {
+    if (wboolean && nboolean && mboolean && latlonboolean) {
       return true;
     }
+    alert('Input format wrong, please correct.')
     return false;
   }
 

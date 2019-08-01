@@ -30,7 +30,7 @@
 
     <!-- Side Nav -->
     <div id="mySidenav" class="sidenav">
-      <div id=fish><i class="fas fa-fish"></i></div>
+      <div id=fish><i class="fas fa-search"></i></div>
       <div class="sidenavTitle" onclick="dashboard.card.closeNav()" id=manual>
         <a href="javascript:void(0);">Manual</a>
       </div>
@@ -67,12 +67,19 @@
         </div>
         <div id=undertable>
           <div id=maxpointstext>
-            Reach Max Points Number Limit.
+            Reach Max Points Limit.
           </div>
-          <div id=addRowBtnDiv>
-            <button type="button" class="btn btn-outline-secondary" id=addRowBtn>
-              <i class="fas fa-plus"></i> Add row
-            </button>
+          <div class="trBtnDiv">
+            <div id=cutRowBtnDiv>
+              <button type="button" class="btn btn-outline-secondary" id=cutRowBtn>
+                <i class="fas fa-minus"></i> Cut row
+              </button>
+            </div>
+            <div id=addRowBtnDiv>
+              <button type="button" class="btn btn-outline-secondary" id=addRowBtn>
+                <i class="fas fa-plus"></i> Add row
+              </button>
+            </div>
           </div>
         </div>
         <!----------------------------------------------------->
