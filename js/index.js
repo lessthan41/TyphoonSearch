@@ -1,8 +1,7 @@
-
 var dashboard;
 
 // Document Ready
-$(function () {
+$(function() {
   dashboard = new DashboardComponent();
 
   // dashboard init
@@ -10,7 +9,7 @@ $(function () {
 
 });
 
-// $('#center').on('click', function(){
+$('#center').on('click', function(){
 //   dashboard.query.get().done((get) => {
 //     toPOST = get['CWB']
 //     console.log(toPOST);
@@ -37,4 +36,4 @@ $(function () {
 //
 //     // dashboard.map.();
 //   });
-// });
+});

@@ -18,9 +18,9 @@ class CardView {
     this.initNav();
   }
 
+  /* Everything for Radius in position */
   trRadiusControl(value) {
     $('#slidebarvalue').html(value);
-
     if ($('#tBody tr').length != 0) { // if table have row
       // $('#tBody tr').find('td:last').html(value + 'km')
       $('#slidebar').val(value);
@@ -83,9 +83,9 @@ class CardView {
     let lastLat = $('#tBody tr:last .latlonInput:first').val();
     let lastLon = $('#tBody tr:last .latlonInput:last').val();
 
-    if(lastLon == '' | lastLat == '') { // if Last tr is blank
+    if (lastLon == '' | lastLat == '') { // if Last tr is blank
       this.tableRowCount--;
-      if(coor[0] == '' && coor[1] == '') { // if Add Row Return
+      if (coor[0] == '' && coor[1] == '') { // if Add Row Return
         return;
       } else { // if mapOnClick add
         $('#tBody tr:last').remove();
@@ -95,7 +95,7 @@ class CardView {
     coor[0] = Math.round(coor[0] * 1000) / 1000;
     coor[1] = Math.round(coor[1] * 1000) / 1000;
 
-    if(coor[0] == 0 && coor[1] == 0) {
+    if (coor[0] == 0 && coor[1] == 0) {
       coor[0] = '';
       coor[1] = '';
     }
@@ -136,7 +136,7 @@ class CardView {
   }
 
   rmTr() {
-    if(this.tableRowCount == 1) {
+    if (this.tableRowCount == 1) {
       $('#tBody tr:last .latlonInput:first').val('');
       $('#tBody tr:last .latlonInput:last').val('');
       return;
@@ -144,6 +144,44 @@ class CardView {
 
     this.tableRowCount--;
     $('#tBody tr:last').remove();
+  }
+
+  /* Check if input format is good */
+  checkLatLonInput(lat, lon) {
+
+    let latboolean = true;
+    let lonboolean = true;
+    let latValue = lat.val();
+    let lonValue = lon.val();
+
+    // Lat Check
+    if (!latValue.match(/^-?[0-9]+.[0-9]+$/) && !latValue.match(/^-?[0-9]+$/)) {
+      this.latlonInputError(lat);
+      latboolean = false;
+    } else if (parseFloat(latValue) > 90 | parseFloat(latValue) < -90) {
+      this.latlonInputError(lat);
+      latboolean = false;
+    } else {
+      this.latlonInputOK(lat);
+    }
+
+    // Lon Check
+    if (!lonValue.match(/^-?[0-9]+.[0-9]+$/) && !lonValue.match(/^-?[0-9]+$/)) {
+      this.latlonInputError(lon);
+      lonboolean = false;
+    } else if (parseFloat(lonValue) > 180 | parseFloat(lonValue) < -180) {
+      this.latlonInputError(lon);
+      lonboolean = false;
+    } else {
+      this.latlonInputOK(lon);
+    }
+
+    if (latboolean && lonboolean) {
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
   /* Change latlon input bgcolor */
@@ -322,31 +360,39 @@ class CardView {
 
   /* Side Nav */
   initNav() {
-    $('#navicon').on( "mouseover", () => {
-      setTimeout(() => { this.openNav(); }, 150);
+    $('#navicon').on("mouseover", () => {
+      setTimeout(() => {
+        this.openNav();
+      }, 150);
     });
 
-    $('#mySidenav').on( "mouseleave", () => {
-      setTimeout(() => { this.closeNav(); }, 150);
+    $('#mySidenav').on("mouseleave", () => {
+      setTimeout(() => {
+        this.closeNav();
+      }, 150);
     });
   }
 
   openNav() {
-    if(this.navClose == true){
+    if (this.navClose == true) {
       return;
     }
     this.navOpen = true;
     document.getElementById('mySidenav').style.width = '250px';
-    setTimeout(() => {this.navOpen = false;}, 200);
+    setTimeout(() => {
+      this.navOpen = false;
+    }, 200);
   }
 
   closeNav() {
-    if(this.navOpen == true){
+    if (this.navOpen == true) {
       return;
     }
     this.navClose = true;
     document.getElementById('mySidenav').style.width = '0px';
-    setTimeout(() => {this.navClose = false;}, 200);
+    setTimeout(() => {
+      this.navClose = false;
+    }, 200);
   }
 
 }

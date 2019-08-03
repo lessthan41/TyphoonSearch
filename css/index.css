@@ -3,11 +3,13 @@ body {
   font-size: 14px;
   line-height: 16px;
 }
-.Outerdiv{
+
+.Outerdiv {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
+
 /* ---------------------------------------------------- */
 /* Onload */
 #drawBgcolor {
@@ -20,6 +22,7 @@ body {
   transition: opacity .8s ease-in-out;
   z-index: 5;
 }
+
 .spinner-grow {
   position: fixed;
   color: black;
@@ -35,40 +38,48 @@ body {
   transition: .8s ease-in-out;
   z-index: 6;
 }
+
 /* ---------------------------------------------------- */
 /* Side Navbar */
-#navicon{
+#navicon {
   position: fixed;
   margin-left: 44px;
   margin-top: 10px;
   z-index: 2;
-  color: rgba(0,60,136,.5);
+  color: rgba(0, 60, 136, .5);
   border-style: solid;
   padding: 10px;
   padding-left: 12px;
   padding-right: 12px;
 }
-#navicon i{
+
+#navicon i {
   font-size: 20px;
 }
-#navicon:hover{
-  background-color: rgba(0,60,136,.3);
+
+#navicon:hover {
+  background-color: rgba(0, 60, 136, .3);
   transition: .25s;
 }
+
 /* The side navigation menu */
 .sidenav {
   height: 100%;
-  width: 0; /* 0 width - change this with JavaScript */
+  width: 0;
+  /* 0 width - change this with JavaScript */
   position: fixed;
   z-index: 3;
-  top: 0; /* Stay at the top */
+  top: 0;
+  /* Stay at the top */
   left: 0;
   background-color: #eaeaea;
-  overflow-x: hidden; /* Disable horizontal scroll */
+  overflow-x: hidden;
+  /* Disable horizontal scroll */
   padding-top: 60px;
   transition: .75s;
   box-shadow: 1px 1px 4px #adb1a9
 }
+
 /* The navigation menu links */
 .sidenav a {
   width: fit-content;
@@ -81,31 +92,42 @@ body {
   display: block;
   transition: 0.3s;
 }
+
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover {
   color: #cbcfd0;
 }
-#fish{
+
+#fish {
   top: 10px;
   text-align: center;
   font-size: xx-large;
   margin-bottom: 30px;
 }
-.fa-search{
+
+.fa-search {
   border-style: solid;
   padding: 7px;
   border-color: #3b4249;
   color: #3b4249;
   border-width: 5px;
 }
+
 #main {
   transition: margin-left .5s;
   padding: 20px;
 }
+
 @media screen and (max-height: 450px) {
-  .sidenav {padding-top: 15px;}
-  .sidenav a {font-size: 18px;}
+  .sidenav {
+    padding-top: 15px;
+  }
+
+  .sidenav a {
+    font-size: 18px;
+  }
 }
+
 /* ---------------------------------------------------- */
 /* Map */
 #map {
@@ -113,6 +135,7 @@ body {
   width: 100vw;
   z-index: 1;
 }
+
 /* ---------------------------------------------------- */
 /* Right */
 #switchBtn, #card1 {
@@ -133,10 +156,12 @@ body {
   box-shadow: 2px 2px 4px #2c5427d1;
   z-index: 2;
 }
+
 #switchBtn:hover {
   color: #ffffff;
   box-shadow: 0.5px 0.5px 10px #ffffff;
 }
+
 /* ---------------------------------------------------- */
 /* Left */
 #detail {
@@ -144,11 +169,13 @@ body {
   left: 5px;
   bottom: 5px;
 }
+
 #mouse-position {
   position: absolute;
   bottom: 5px;
   left: 90px;
 }
+
 /* ---------------------------------------------------- */
 /* Card1 */
 #card1 {
@@ -163,6 +190,7 @@ body {
   transition: .3s ease-in-out;
   z-index: 4;
 }
+
 /* ---------------------------------------------------- */
 /* Card2 */
 #card2 {
@@ -179,9 +207,11 @@ body {
   transition: .3s ease-in-out;
   z-index: 4;
 }
+
 #card2 a {
   color: #3936a9;
 }
+
 #card2 a:hover {
   color: #524ed5;
   text-decoration: blink;
@@ -191,65 +221,84 @@ body {
     box-shadow .25s ease-in-out,
     text-decoration .25s ease-in-out;
 }
+
 /* ---------------------------------------------------- */
 /* Scroll bar */
 ::-webkit-scrollbar {
   width: 7px;
 }
+
 ::-webkit-scrollbar-track {
   -webkit-border-radius: 10px;
   border-radius: 10px;
-  margin:5px 0 5px 0;
+  margin: 5px 0 5px 0;
 }
+
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 4px;
   border-radius: 4px;
-  background: rgb(219,219,219);
+  background: rgb(219, 219, 219);
 }
+
 /* ---------------------------------------------------- */
 /* Slide bar */
 .Sliderdiv {
   padding: 5px;
 }
+
 #slidebartext {
   margin-bottom: 5px;
 }
+
 /* ---------------------------------------------------- */
 /* Table */
 .tablediv {
   text-align: center;
   padding: 5px 0px 0px 0px;
 }
+
 .table {
   margin-bottom: unset;
   text-align: center;
 }
-td.inputTd { /* Lat Lon td */
+
+td.inputTd {
+  /* Lat Lon td */
   padding: 0.45rem 0.55rem 0.45rem 0.55rem;
   text-align: center;
 }
-td.radiusTd { /* Radius td */
+
+td.radiusTd {
+  /* Radius td */
   width: 85px;
 }
-.radiusTdDiv{ /* Radius position */
+
+.radiusTdDiv {
+  /* Radius position */
   width: 50px;
 }
-.latlonCenterDiv { /* Lat Lon input position */
+
+.latlonCenterDiv {
+  /* Lat Lon input position */
   margin: 0 auto;
   width: fit-content;
 }
+
 td ::-webkit-input-placeholder {
-   text-align: center;
+  text-align: center;
 }
+
 #undertable {
   padding: 3px 2px 2px 9px;
   display: flex;
   justify-content: space-between;
 }
+
 .trBtnDiv {
   display: flex;
   justify-content: space-between;
 }
+
 #maxpointstext {
   text-align: left;
   color: red;
@@ -257,6 +306,7 @@ td ::-webkit-input-placeholder {
   line-height: 24px;
   visibility: hidden;
 }
+
 .btn-outline-secondary {
   height: 24px;
   font-size: inherit;
@@ -270,32 +320,39 @@ td ::-webkit-input-placeholder {
 #form {
   margin-bottom: 10px;
 }
+
 .form-group {
   display: flex;
   justify-content: space-between;
   margin-bottom: unset;
 }
-#wtitle, #ntitle, #mtitle { /* vertical center */
+
+#wtitle, #ntitle, #mtitle {
+  /* vertical center */
   height: 25px;
   line-height: 29px;
   text-align: right;
   margin-right: 10px;
 }
+
 #wInput, #nInput, #mInput {
   width: 200px;
   height: 30px;
 }
+
 #wSmall, #nSmall, #mSmall {
   margin-top: unset;
   text-align: right;
   padding-right: 16px;
   visibility: hidden;
 }
+
 /* ---------------------------------------------------- */
 /* Btn */
 #btnDiv {
   float: right;
 }
+
 #clearBtn {
   margin-right: 5px;
   width: 69.58px;

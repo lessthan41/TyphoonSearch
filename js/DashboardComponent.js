@@ -10,6 +10,7 @@ class DashboardComponent {
     this.mapHaveClicked = false; // for control Slidebar min
     this.switchCondition = 'Sun';
     this.resultHoverEvent = null;
+    this.rowsHavePointOnMap = new Array(); // Remember which rows' lonlat have point on Map for delete
   }
 
   init() {
@@ -39,6 +40,7 @@ class DashboardComponent {
     let initial = 50;
     $('#clearBtn').on('click', () => {
       this.mapHaveClicked = false;
+      this.rowsHavePointOnMap = [];
       this.map.removeMarker();
       this.card.removeRecord(initial);
       this.latlonOnChange();
@@ -55,8 +57,10 @@ class DashboardComponent {
       let lastLon = $('#tBody tr:last .latlonInput:last').val();
       currentValue = $('#slidebar').val();
 
-      if(lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)) {
-        this.map.radiusController(currentValue);
+      if (lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)) {
+        if (lastLon.match(/^[0-9]+.[0-9]+$/) | lastLon.match(/^[0-9]+$/)) {
+          this.map.radiusController(currentValue);
+        }
       }
       this.card.trRadiusControl(currentValue); // change slidebar display value
     });
@@ -64,48 +68,58 @@ class DashboardComponent {
 
   /* latlon OnChange */
   latlonOnChange() {
-    $('.latlonInput').each((i, v) => { // Order, this
-      let elem = $(v);
-      elem.on('change', () => {
 
-        if(!elem.val().match(/^\d+\.?\d+$/)) { // if it's not a number
-          this.card.latlonInputError(elem);
-          return;
+    let elem = $('#tBody tr:last');
+
+    elem.on('change', () => {
+
+      let lat = $(elem).closest('tr').find('.latlonInput:first');
+      let lon = $(elem).closest('tr').find('.latlonInput:last');
+      let order = parseInt($(elem).closest('tr').find('td:first').text());
+      let radius = parseInt($(elem).closest('tr').find('td:last').text()) * 1000;
+      let coor, justForPlot = true;
+
+      // If input format no problem
+      if (this.card.checkLatLonInput(lat, lon)) {
+
+        console.log('Draw!!');
+        coor = this.map.LatLontoTM2([parseFloat(lon.val()), parseFloat(lat.val())]);
+
+        if ($.inArray(order, this.rowsHavePointOnMap) == -1) { // New Point
+          this.rowsHavePointOnMap.splice(order - 1, 0, order); // Add
+          this.map.coorContainer.splice(order - 1, 0, coor); // Add coor
+
+          // Deal with Radius
+          if (order == this.card.tableRowCount) { // Last Tr
+            this.map.activeRadiusContainer = radius;
+            this.map.fixRadiusContainer.push(parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()) * 1000);
+          } else {
+            this.map.fixRadiusContainer.splice(order - 1, 0, radius)
+          }
+
         } else {
-          this.card.latlonInputOK(elem);
+          this.rowsHavePointOnMap.splice(order - 1, 1, order); // Replace
+          this.map.coorContainer.splice(order - 1, 1, coor); // Replace coor
         }
 
-        let lat = $(elem).closest('tr').find('.latlonInput:first');
-        let lon = $(elem).closest('tr').find('.latlonInput:last');
-        let order = parseInt($(elem).closest('tr').find('td:first').text());
-        let latboolean = true, lonboolean = true;
-        let coor;
+        this.map.addMarker(justForPlot);
 
-        // Lat Check
-        // Check no Empty Value
-        if (!lat.val().match(/^[0-9]+.[0-9]+$/) && !lat.val().match(/^[0-9]+$/)){
-          this.card.latlonInputError(lat);
-          latboolean = false;
-        } else {
-          this.card.latlonInputOK(lat);
-        }
+      } else {
 
-        // Lon Check
-        if (!lon.val().match(/^[0-9]+.[0-9]+$/) && !lon.val().match(/^[0-9]+$/)) {
-          this.card.latlonInputError(lon);
-          lonboolean = false;
-        } else {
-          this.card.latlonInputOK(lon);
-        }
+        // console.log('Delete Point from Map!!');
+        if($.inArray(order, this.rowsHavePointOnMap) != -1) {
+          this.map.coorContainer.splice(this.rowsHavePointOnMap.indexOf(order), 1); // Rm
+          this.rowsHavePointOnMap.splice(this.rowsHavePointOnMap.indexOf(order), 1); // Rm
 
-        // If no problem
-        if (latboolean && lonboolean){
-          console.log('Draw!!');
-          coor = this.map.LatLontoTM2([parseFloat(lon.val()), parseFloat(lat.val())]);
-          this.map.coorContainer[order-1] = coor; // Replace the old coor
-          this.map.addMarker();
+          if (order == this.card.tableRowCount) { // Last Tr
+            this.map.activeRadiusContainer = this.map.fixRadiusContainer.pop();
+          } else {
+            this.map.fixRadiusContainer.splice(order - 1, 1);
+          }
+
+          this.map.addMarker(justForPlot);
         }
-      });
+      }
     });
   }
 
@@ -114,10 +128,12 @@ class DashboardComponent {
     let coor;
     this.map.map.on('click', (evt) => {
       setTimeout(() => { // set time out for smartphone version (no instant mousePosition)
-        if (evt.dragging) {
-          return;
-        } // Dragging event Return
+
         coor = this.map.getMousePosition();
+
+        if (evt.dragging) { // Dragging event Return
+          return;
+        }
         if (isNaN(coor[0])) { // Prevent Error
           return;
         }
@@ -125,15 +141,24 @@ class DashboardComponent {
           this.card.showWarning();
           return;
         };
+        if(this.rowsHavePointOnMap.length != this.card.tableRowCount){ // All latloninput OK then Add
+          if($('#tBody tr:last .latlonInput:first').val() != '' | $('#tBody tr:last .latlonInput:last').val() != '') {
+              return;
+          }
+        }
 
-        this.map.coorContainer.push( this.map.getMousePosition() );
-        this.map.bufferRadius = parseInt($('#slidebarvalue').html()) * 1000;
+        this.map.coorContainer.push(this.map.getMousePosition());
+
+        // Cant find this row Point on Map then ADD
+        if ($.inArray(this.map.coorContainer.length, this.rowsHavePointOnMap) == -1) {
+          this.rowsHavePointOnMap.push(this.map.coorContainer.length);
+        }
+
+        this.map.activeRadiusContainer = parseInt($('#slidebarvalue').text()) * 1000;
         this.map.addMarker();
         coor = this.map.TM2toLatLon(coor); // coor transform
         this.card.addTr(coor);
         this.latlonOnChange(); // Add Onchange Event
-        console.log($('#slidebar').val());
-        console.log(this.mapHaveClicked);
         this.card.slidebarMinValueControl(this.mapHaveClicked, $('#slidebar').val());
         this.mapHaveClicked = true;
       }, 10);
@@ -143,9 +168,12 @@ class DashboardComponent {
   /* Addrow Btn Onclick */
   addRowBtnOnClick() {
     $('#addRowBtn').on('click', () => {
-      this.card.addTr(['','']);
+      if(this.rowsHavePointOnMap.length != this.card.tableRowCount){ // All latloninput OK then Add
+        return;
+      }
+      this.card.addTr(['', '']);
       this.latlonOnChange();
-      if(this.card.tableRowCount > 1){
+      if (this.card.tableRowCount > 1) {
         this.card.slidebarMinValueControl(true, $('#slidebar').val());
       }
     });
@@ -162,27 +190,25 @@ class DashboardComponent {
       this.card.hideWarning();
 
       // console.log('adjust slidebar');
-      if(this.card.tableRowCount == 1) {
+      if (this.card.tableRowCount == 1) {
         this.card.slidebarMinValueControl(true, 1);
       } else {
         this.card.slidebarMinValueControl(true, parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()));
       }
       this.card.trRadiusControl(parseInt($('#tBody td:last').text()));
 
-      // if both match number then delete from this.map.coorContainer
-      if (lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)){
-        if(lastLon.match(/^[0-9]+.[0-9]+$/) | lastLon.match(/^[0-9]+$/)) {
-          let radius = parseInt($('#tBody td:last').text()) * 1000; // Unit: m
-          let dontAddFixBuffer = true;
+      // if both match number then delete from this.map.coorContainer & this.rowsHavePointOnMap
+      if (lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)) {
+        if (lastLon.match(/^[0-9]+.[0-9]+$/) | lastLon.match(/^[0-9]+$/)) {
+          let radius = this.map.fixRadiusContainer[this.rowsHavePointOnMap.length - 2]; // Unit: m
+          let justForPlot = true;
 
-          // console.log('delete coor from map');
           this.map.coorContainer.pop();
-          this.map.bufferRadius = radius; // Replace newest point radius
-          this.map.fixRadiusContainer.splice(this.card.tableRowCount-1); // Rm fixRadius
-          this.map.addMarker(dontAddFixBuffer);
+          this.map.activeRadiusContainer = radius; // Replace newest point radius
+          this.map.fixRadiusContainer.splice(this.card.tableRowCount - 1); // Rm fixRadius
+          this.map.addMarker(justForPlot);
 
-          // console.log(this.map.bufferRadius);
-          // console.log(this.map.fixRadiusContainer);
+          this.rowsHavePointOnMap.splice($.inArray(this.card.tableRowCount, this.rowsHavePointOnMap)+1, 1);
 
         }
       }
@@ -200,7 +226,7 @@ class DashboardComponent {
         this.card.onload();
         coor = this.map.coorContainer;
         radius = this.map.fixRadiusContainer.slice(); // Reference Problem
-        radius.push(this.map.bufferRadius);
+        radius.push(this.map.activeRadiusContainer);
         toPOST = this.query.wrap(coor, radius);
         toPOST = JSON.stringify(toPOST);
 

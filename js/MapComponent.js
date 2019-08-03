@@ -1,13 +1,13 @@
 /**
-* Init Map Component
-* Map Marker Functions
-*/
+ * Init Map Component
+ * Map Marker Functions
+ */
 class MapComponent {
-  constructor () {
+  constructor() {
     this.map = null;
     this.mousePositionControl = null;
     this.coorContainer = new Array();
-    this.bufferRadius = 50 * 1000; // default 50 km
+    this.activeRadiusContainer = 50 * 1000; // default 50 km
     this.fixRadiusContainer = new Array(); // for fixed radius
     this.pointLayer = new ol.layer.Vector({});
     this.lineLayer = new ol.layer.Vector({});
@@ -26,28 +26,28 @@ class MapComponent {
     });
     this.pointStyle1 = [
       new ol.style.Style({
-          image: new ol.style.Icon(({
-              scale: 0.3,
-              rotateWithView: false,
-              anchor: [0.5, 0.9],
-              anchorXUnits: 'fraction',
-              anchorYUnits: 'fraction',
-              opacity: 1,
-              src: 'https://lessthan41.github.io/TyphoonSearch/img/pointer1.png'
-          }))
+        image: new ol.style.Icon(({
+          scale: 0.3,
+          rotateWithView: false,
+          anchor: [0.5, 0.9],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          opacity: 1,
+          src: 'https://lessthan41.github.io/TyphoonSearch/img/pointer1.png'
+        }))
       })
     ];
     this.pointStyle2 = [
       new ol.style.Style({
-          image: new ol.style.Icon(({
-              scale: 0.3,
-              rotateWithView: false,
-              anchor: [0.5, 0.9],
-              anchorXUnits: 'fraction',
-              anchorYUnits: 'fraction',
-              opacity: 1,
-              src: 'https://lessthan41.github.io/TyphoonSearch/img/pointer2.png'
-          }))
+        image: new ol.style.Icon(({
+          scale: 0.3,
+          rotateWithView: false,
+          anchor: [0.5, 0.9],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'fraction',
+          opacity: 1,
+          src: 'https://lessthan41.github.io/TyphoonSearch/img/pointer2.png'
+        }))
       })
     ];
     this.lineStyle1 = [ // User Input
@@ -68,29 +68,29 @@ class MapComponent {
     ];
     this.bufferStyle1 = [
       new ol.style.Style({
-          stroke: new ol.style.Stroke({
-              color: '#595959',
-              width: 1
-          }),
-          fill: new ol.style.Fill({
-              color: 'rgba(61, 60, 60, 0.3)'
-          })
+        stroke: new ol.style.Stroke({
+          color: '#595959',
+          width: 1
+        }),
+        fill: new ol.style.Fill({
+          color: 'rgba(61, 60, 60, 0.3)'
+        })
       })
     ];
     this.bufferStyle2 = [
       new ol.style.Style({
-          stroke: new ol.style.Stroke({
-              color: 'white',
-              width: 1
-          }),
-          fill: new ol.style.Fill({
-              color: 'rgba(255, 255, 255, 0.3)'
-          })
+        stroke: new ol.style.Stroke({
+          color: 'white',
+          width: 1
+        }),
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.3)'
+        })
       })
     ];
   }
 
-  init () {
+  init() {
     this.mousePositionControl = new ol.control.MousePosition({
       coordinateFormat: ol.coordinate.createStringXY(4),
       className: 'custom-mouse-position',
@@ -98,41 +98,41 @@ class MapComponent {
       undefinedHTML: '&nbsp;'
     });
     this.map = new ol.Map({
-        target: 'map',
-        controls: ol.control.defaults({ // MousePosition
-          attributionOptions: {
-            collapsible: false
-          }
-        }).extend([this.mousePositionControl]),
-        layers: [ // OSM
-          this.mapTile,
-          this.pointLayer, // Empty Layer for addMarker
-          this.lineLayer,  // Empty Layer for addLine
-          this.bufferLayer, // Empty Layer for addBuffer
-          this.fixBufferLayer // Empty Layer for FixedBuffer
-        ],
-        view: new ol.View({ // setView
-          center: ol.proj.fromLonLat([125.9, 22.5]),
-          zoom: 7
-        })
-      });
+      target: 'map',
+      controls: ol.control.defaults({ // MousePosition
+        attributionOptions: {
+          collapsible: false
+        }
+      }).extend([this.mousePositionControl]),
+      layers: [ // OSM
+        this.mapTile,
+        this.pointLayer, // Empty Layer for addMarker
+        this.lineLayer, // Empty Layer for addLine
+        this.bufferLayer, // Empty Layer for addBuffer
+        this.fixBufferLayer // Empty Layer for FixedBuffer
+      ],
+      view: new ol.View({ // setView
+        center: ol.proj.fromLonLat([125.9, 22.5]),
+        zoom: 7
+      })
+    });
   }
 
   /* Add Pointer */
-  addMarker (dontAddFixBuffer = false) {
-    setTimeout( () => { // set time out for smartphone version (no instant mousePosition)
+  addMarker(justForPlot = false) {
+    setTimeout(() => { // set time out for smartphone version (no instant mousePosition)
       this.addPoint(this.coorContainer);
       this.addLine(this.coorContainer);
       this.addBuffer(this.coorContainer);
       this.addFixBuffer(this.coorContainer);
-      if (dontAddFixBuffer) { // if Dont need to add fix buffer (just plot) then pop()
+      if (justForPlot) { // if Dont need to add fix buffer (just plot) then pop()
         this.fixRadiusContainer.pop();
       }
     }, 10);
   }
 
   /* Clear Pointer and Line */
-  removeMarker () {
+  removeMarker() {
     this.coorContainer = [];
     this.fixRadiusContainer = [];
     this.addPoint(this.coorContainer);
@@ -143,43 +143,49 @@ class MapComponent {
   }
 
   /* Get Coordinate and Return [x, y](m) */
-  getMousePosition () {
+  getMousePosition() {
     let currentPosition = $('#mouse-position').text();
     let commaPosition = currentPosition.indexOf(',');
     let x = parseFloat(currentPosition.substring(0, commaPosition));
-    let y = parseFloat(currentPosition.substring(commaPosition+1));
+    let y = parseFloat(currentPosition.substring(commaPosition + 1));
     return [x, y];
   }
 
   /* coor from EPSG:3857 to 4326 (latlon to TM2) */
-  LatLontoTM2(coor){
+  LatLontoTM2(coor) {
     return ol.proj.transform(coor, 'EPSG:4326', 'EPSG:3857');
   }
 
   /* coor from EPSG:4326 to 3857 (TM2 to latlon) */
-  TM2toLatLon(coor){
+  TM2toLatLon(coor) {
     return ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
   }
 
   /* Add Point */
-  addPoint (coor) {
+  addPoint(coor) {
     let featurePoints = new Array();
     let style = this.switchCondition == 'Sun' ? this.pointStyle1 : this.pointStyle2;
     let source;
 
-    for(var i=0; i<coor.length; i++) { // for i in coor add Feature and set style
-      featurePoints[i] = new ol.Feature({ geometry: new ol.geom.Point(coor[i]) });
+    for (var i = 0; i < coor.length; i++) { // for i in coor add Feature and set style
+      featurePoints[i] = new ol.Feature({
+        geometry: new ol.geom.Point(coor[i])
+      });
       featurePoints[i].setStyle(style);
     }
 
-    source = new ol.source.Vector ({ features: featurePoints });
-    this.pointLayer = new ol.layer.Vector ({ source: source });
-    this.map.getLayers().getArray().splice(1,1,this.pointLayer); // replace the previous one
+    source = new ol.source.Vector({
+      features: featurePoints
+    });
+    this.pointLayer = new ol.layer.Vector({
+      source: source
+    });
+    this.map.getLayers().getArray().splice(1, 1, this.pointLayer); // replace the previous one
     this.map.render();
   }
 
   /* Add History Data Points */
-  addDataPoint (coor) {
+  addDataPoint(coor) {
 
     // this.pointDataLayer = [];
     // let featurePoints = new Array();
@@ -207,35 +213,47 @@ class MapComponent {
   }
 
   /* Add Line */
-  addLine (coor) {
+  addLine(coor) {
     let source, feature;
     let style = this.switchCondition == 'Sun' ? this.lineStyle1 : this.lineStyle2;
 
-    feature = new ol.Feature({ geometry: new ol.geom.LineString(coor) });
+    feature = new ol.Feature({
+      geometry: new ol.geom.LineString(coor)
+    });
     feature.setStyle(style); // set style
-    source = new ol.source.Vector({ features: [feature] });
-    this.lineLayer = new ol.layer.Vector({ source: source });
-    this.map.getLayers().getArray().splice(2,1,this.lineLayer); // replace the previous one
+    source = new ol.source.Vector({
+      features: [feature]
+    });
+    this.lineLayer = new ol.layer.Vector({
+      source: source
+    });
+    this.map.getLayers().getArray().splice(2, 1, this.lineLayer); // replace the previous one
     this.map.render();
   }
 
   /* Add History Data Line */
-  addDataLine (coor) {
+  addDataLine(coor) {
     let source, feature, layer, opacity, split, self, currentColor;
     let count = 0;
     let style = new Array();
     this.lineDataStyle = []; // Clear Style Array
-    this.map.getLayers().getArray().splice(5,this.lineDataLayerCount); // Clear Layers
+    this.map.getLayers().getArray().splice(5, this.lineDataLayerCount); // Clear Layers
     this.lineDataLayerCount = Object.keys(coor).length;
 
-    for(var i=0; i<this.lineDataLayerCount; i++) {
+    for (var i = 0; i < this.lineDataLayerCount; i++) {
       self = Object.keys(coor)[i];
-      feature = new ol.Feature({ geometry: new ol.geom.LineString(coor[self]) });
-      opacity = Math.round((1 - count/this.lineDataLayerCount) * 10) / 10;
+      feature = new ol.Feature({
+        geometry: new ol.geom.LineString(coor[self])
+      });
+      opacity = Math.round((1 - count / this.lineDataLayerCount) * 10) / 10;
       this.setIndepStyle(feature, opacity);
-      source = new ol.source.Vector({ features: [feature] });
-      layer = new ol.layer.Vector({ source: source });
-      this.map.getLayers().getArray().splice(5,0,layer);
+      source = new ol.source.Vector({
+        features: [feature]
+      });
+      layer = new ol.layer.Vector({
+        source: source
+      });
+      this.map.getLayers().getArray().splice(5, 0, layer);
       count++;
     }
 
@@ -243,7 +261,7 @@ class MapComponent {
   }
 
   /* Set Independent Data Style */
-  setIndepStyle (feature, opacity) {
+  setIndepStyle(feature, opacity) {
     let lineColor = this.switchCondition == 'Sun' ? 'rgba(12, 96, 39, ' : 'rgba(34, 165, 1, ';
     let lineStyle =
       new ol.style.Style({
@@ -258,23 +276,29 @@ class MapComponent {
   }
 
   /* Add Changable Buffer */
-  addBuffer (coor) {
+  addBuffer(coor) {
     let coorLength = coor.length;
-    let center = coorLength == 0 ? [] : coor[coorLength-1]; // Prevent error
-    let radius = this.radiusCorrection(center, this.bufferRadius); // Radius Correction
-    let buffer = new ol.Feature({ geometry: new ol.geom.Circle(center, radius) }); // the newest point
+    let center = coorLength == 0 ? [] : coor[coorLength - 1]; // Prevent error
+    let radius = this.radiusCorrection(center, this.activeRadiusContainer); // Radius Correction
+    let buffer = new ol.Feature({
+      geometry: new ol.geom.Circle(center, radius)
+    }); // the newest point
     let style = this.switchCondition == 'Sun' ? this.bufferStyle1 : this.bufferStyle2;
     let sourceBuffer;
 
     buffer.setStyle(style);
-    sourceBuffer = new ol.source.Vector({ features: [buffer] });
-    this.bufferLayer = new ol.layer.Vector({ source: sourceBuffer });
-    this.map.getLayers().getArray().splice(3,1,this.bufferLayer); // replace the previous one
+    sourceBuffer = new ol.source.Vector({
+      features: [buffer]
+    });
+    this.bufferLayer = new ol.layer.Vector({
+      source: sourceBuffer
+    });
+    this.map.getLayers().getArray().splice(3, 1, this.bufferLayer); // replace the previous one
     this.map.render();
   }
 
   /* Add Fixed Buffer */
-  addFixBuffer (coor) {
+  addFixBuffer(coor) {
 
     let coorLength = coor.length;
     let center = coor.slice();
@@ -283,46 +307,52 @@ class MapComponent {
     let style = this.switchCondition == 'Sun' ? this.bufferStyle1 : this.bufferStyle2;
     center.pop(); // pop the newest point
 
-    if(coorLength >= 2){ // setting feature is needed only when points >= 2
-      this.fixRadiusContainer.push(this.bufferRadius);
-      for(var i=0; i<coorLength-1; i++){
+    if (coorLength >= 2) { // setting feature is needed only when points >= 2
+      this.fixRadiusContainer.push(this.activeRadiusContainer);
+      for (var i = 0; i < coorLength - 1; i++) {
         let radius = this.radiusCorrection(center[i], this.fixRadiusContainer[i]); // Radius Correction
-        fixBufferArray[i] = new ol.Feature({ geometry: new ol.geom.Circle(center[i], radius) });
+        fixBufferArray[i] = new ol.Feature({
+          geometry: new ol.geom.Circle(center[i], radius)
+        });
         fixBufferArray[i].setStyle(style);
       }
     }
 
-    sourceBuffer = new ol.source.Vector({ features: fixBufferArray });
-    this.fixBufferLayer = new ol.layer.Vector({ source: sourceBuffer });
-    this.map.getLayers().getArray().splice(4,1,this.fixBufferLayer); // replace the previous one
+    sourceBuffer = new ol.source.Vector({
+      features: fixBufferArray
+    });
+    this.fixBufferLayer = new ol.layer.Vector({
+      source: sourceBuffer
+    });
+    this.map.getLayers().getArray().splice(4, 1, this.fixBufferLayer); // replace the previous one
     this.map.render();
   }
 
   /* Change radius */
-  radiusController (radius) {
-    this.bufferRadius = radius * 1000; // km to m
+  radiusController(radius) {
+    this.activeRadiusContainer = radius * 1000; // km to m
     this.addBuffer(this.coorContainer);
   }
 
   /* Convert Radius Wanted(m) into value to input */
-  radiusCorrection (center, radius) {
+  radiusCorrection(center, radius) {
     let edgeCoordinate = [center[0] + radius, center[1]];
     let wgs84Sphere = new ol.Sphere(6378137);
     let groundRadius = wgs84Sphere.haversineDistance(
-        ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326'),
-        ol.proj.transform(edgeCoordinate, 'EPSG:3857', 'EPSG:4326')
+      ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326'),
+      ol.proj.transform(edgeCoordinate, 'EPSG:3857', 'EPSG:4326')
     );
 
-    return radius/groundRadius * radius; // Ratio * radius
+    return radius / groundRadius * radius; // Ratio * radius
   }
 
   /* After GET history data plot data */
-  plotData (data) {
+  plotData(data) {
 
     let coor = new Array();
     this.lineDataCoor = new Object();
 
-    for(var i in data){
+    for (var i in data) {
       this.lineDataCoor[i] = new Array();
       for (var j in data[i]['points']) {
         coor = [data[i]['points'][j]['longitude'], data[i]['points'][j]['latitude']];
@@ -335,7 +365,7 @@ class MapComponent {
   }
 
   /* Switch Tile */
-  tileSwitch (btncase) {
+  tileSwitch(btncase) {
     this.switchCondition = btncase;
     switch (btncase) {
       case 'Sun':
@@ -345,7 +375,7 @@ class MapComponent {
           })
         });
 
-        this.map.getLayers().getArray().splice(0,1,this.mapTile); // Change Tile
+        this.map.getLayers().getArray().splice(0, 1, this.mapTile); // Change Tile
 
         break;
 
@@ -355,7 +385,7 @@ class MapComponent {
             'url': 'http://{a-c}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
           })
         });
-        this.map.getLayers().getArray().splice(0,1,this.mapTile); // Change Tile
+        this.map.getLayers().getArray().splice(0, 1, this.mapTile); // Change Tile
 
         break;
     };
@@ -364,16 +394,16 @@ class MapComponent {
     let lineStyle = this.switchCondition == 'Sun' ? this.lineStyle1 : this.lineStyle2;
     let bufferStyle = this.switchCondition == 'Sun' ? this.bufferStyle1 : this.bufferStyle2;
 
-    if(this.coorContainer.length >= 1){
+    if (this.coorContainer.length >= 1) {
       this.addDataLine(this.lineDataCoor); // Change Data Line
       this.map.getLayers().getArray()[2].getSource().getFeatures()[0].setStyle(lineStyle); // Change User Line
       this.map.getLayers().getArray()[3].getSource().getFeatures()[0].setStyle(bufferStyle); // Change Buffer Style
-      for(var i=0; i<this.coorContainer.length; i++){
+      for (var i = 0; i < this.coorContainer.length; i++) {
         this.map.getLayers().getArray()[1].getSource().getFeatures()[i].setStyle(pointStyle); // Change Pointer Style
       };
     };
-    if(this.coorContainer.length >= 2){
-      for(var i=0; i<this.coorContainer.length-1; i++){
+    if (this.coorContainer.length >= 2) {
+      for (var i = 0; i < this.coorContainer.length - 1; i++) {
         this.map.getLayers().getArray()[4].getSource().getFeatures()[i].setStyle(bufferStyle);
       };
     };
@@ -382,7 +412,7 @@ class MapComponent {
   }
 
   /* Result Tr Hover */
-  dataLineShine (indx) {
+  dataLineShine(indx) {
     let lineColor = this.switchCondition == 'Sun' ? 'rgba(12, 96, 39, 0.1)' : 'rgba(34, 165, 1, 0.1)';
     let targetLineColor = this.switchCondition == 'Sun' ? 'rgba(12, 96, 39, 1)' : 'rgba(34, 165, 1, 1)';
     let layerCount = this.map.getLayers().getArray().length;
@@ -390,7 +420,7 @@ class MapComponent {
     let self;
 
     /* set Every Data Line Color */
-    for(var i=5; i<layerCount; i++) { // start from 5, 4 is the layer length of basic map
+    for (var i = 5; i < layerCount; i++) { // start from 5, 4 is the layer length of basic map
       self = this.map.getLayers().getArray()[i];
       self.getSource().getFeatures()[0].getStyle().getStroke()['a'] = lineColor;
       self.getSource().changed();

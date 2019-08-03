@@ -9,7 +9,7 @@ class Request {
   }
 
   /* get data via ajax */
-  get(url='/typhoon_forecast', toPOST='') {
+  get(url = '/typhoon_forecast', toPOST = '') {
 
     if (toPOST != '') {
       url = url + '?toPOST=' + toPOST
@@ -77,7 +77,7 @@ class Request {
 
     $('.latlonInput').each((i, v) => { // Examine lat lon input
       let elem = $(v);
-      if(!elem.val().match(/^\d+\.?\d*$/)){
+      if (!elem.val().match(/^\d+\.?\d*$/)) {
         latlonboolean = false;
         return;
       }
