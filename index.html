@@ -28,83 +28,109 @@
       <span class="sr-only">Loading...</span>
     </div>
 
-    <!-- Side Nav -->
-    <div id="mySidenav" class="sidenav">
-      <div id=fish><i class="fas fa-search"></i></div>
-      <div class="sidenavTitle" onclick="dashboard.card.closeNav()" id=manual>
-        <a href="javascript:void(0);">Manual</a>
-      </div>
-      <div class="sidenavTitle" onclick="dashboard.card.closeNav()" id=center>
-        <a href="javascript:void(0);">Center</a>
-      </div>
-    </div>
-    <!-- open the sidenav -->
-    <span id=navicon onclick="dashboard.card.openNav()"><i class="fas fa-bars"></i></span>
-
     <!-- map -->
-    <div id="map" onclick="dashboard.card.closeNav()"></div>
+    <div id="map"></div>
 
     <!-- Query Card -->
-    <div class="card" id=card1 onclick="dashboard.card.closeNav()">
-      <div class="card-body">
-        <div class="Sliderdiv">
-          <div id=slidebartext>Buffer Radius : <span id=slidebarvalue>50</span> km</div>
-          <input type="range" class="custom-range" min="1" max="300" value="50" id="slidebar">
-        </div>
-        <!----------------------------------------------------->
-        <div class="tablediv">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Order</th>
-                <th scope="col">Lat</th>
-                <th scope="col">Lon</th>
-                <th scope="col">Radi</th>
-              </tr>
-            </thead>
-            <tbody id=tBody></tbody>
-          </table>
-        </div>
-        <div id=undertable>
-          <div id=maxpointstext>
-            Reach Max Points Limit.
-          </div>
-          <div class="trBtnDiv">
-            <div id=cutRowBtnDiv>
-              <button type="button" class="btn btn-outline-secondary" id=cutRowBtn>
-                <i class="fas fa-minus"></i> Cut row
-              </button>
+    <div class="card" id=card1>
+      <div class="card-body" id=card1Body>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="Center-tab" data-toggle="tab" href="#Center" role="tab" aria-controls="Center" aria-selected="true">Center</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="Manual-tab" data-toggle="tab" href="#Manual" role="tab" aria-controls="Manual" aria-selected="false">Manual</a>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="Center" role="tabpanel" aria-labelledby="Center-tab">
+
+            <!-- Center -->
+            <div id=centerCard>
+              <div id=AgentBtnDiv></div>
+              <div class="tablediv" id=typhoonTableDiv>
+                <table class="table" id=typhoonTable>
+                  <thead></thead>
+                  <tbody id=tBodyCenter></tbody>
+                </table>
+              </div>
+              <!----------------------------------------------------->
+              <div id=forMoveDiv>
+                <form id=form>
+                  <small id="wSmall" class="form-text text-muted">Index should be a number.</small>
+                  <div class="form-group">
+                    <label id=wtitle>Time Weighted Index :</label>
+                    <input class="form-control" id="wInput" placeholder="default value 1.0">
+                  </div>
+                  <small id="nSmall" class="form-text text-muted">Index should be a integer.</small>
+                  <div class="form-group">
+                    <label id=ntitle>Number to Search :</label>
+                    <input class="form-control" id="nInput" placeholder="default / max value 10">
+                  </div>
+                  <small id="mSmall" class="form-text text-muted">Month should be a integer in 1~12.</small>
+                  <div class="form-group">
+                    <label id=mtitle>Month :</label>
+                    <input class="form-control" id="mInput" placeholder="default this month 1~12">
+                  </div>
+                </form>
+                <!----------------------------------------------------->
+                <div id=btnDiv>
+                  <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
+                  <button type="button" class="btn btn-primary" id=queryBtn>Query</button>
+                </div>
+              </div>
             </div>
-            <div id=addRowBtnDiv>
-              <button type="button" class="btn btn-outline-secondary" id=addRowBtn>
-                <i class="fas fa-plus"></i> Add row
-              </button>
+
+          </div>
+          <div class="tab-pane fade" id="Manual" role="tabpanel" aria-labelledby="Manual-tab">
+
+            <!-- Manual -->
+            <div id=manualCard>
+              <div class="Sliderdiv">
+                <div id=slidebartext>Buffer Radius : <span id=slidebarvalue>50</span> km</div>
+                <input type="range" class="custom-range" min="1" max="300" value="50" id="slidebar">
+              </div>
+              <!----------------------------------------------------->
+              <div class="tablediv" id=latlonTableDiv>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Order</th>
+                      <th scope="col">Lat</th>
+                      <th scope="col">Lon</th>
+                      <th scope="col">Radi</th>
+                    </tr>
+                  </thead>
+                  <tbody id=tBodyManual></tbody>
+                </table>
+              </div>
+              <div id=undertable>
+                <div id=maxpointstext>
+                  Reach Max Points Limit.
+                </div>
+                <div class="trBtnDiv">
+                  <div id=cutRowBtnDiv>
+                    <button type="button" class="btn btn-outline-secondary" id=cutRowBtn>
+                      <i class="fas fa-minus"></i> Cut row
+                    </button>
+                  </div>
+                  <div id=addRowBtnDiv>
+                    <button type="button" class="btn btn-outline-secondary" id=addRowBtn>
+                      <i class="fas fa-plus"></i> Add row
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!----------------------------------------------------->
             </div>
           </div>
         </div>
+
         <!----------------------------------------------------->
-        <form id=form>
-          <small id="wSmall" class="form-text text-muted">Index should be a number.</small>
-          <div class="form-group">
-            <label id=wtitle>Time Weighted Index :</label>
-            <input class="form-control" id="wInput" placeholder="default value 1.0">
-          </div>
-          <small id="nSmall" class="form-text text-muted">Index should be a integer.</small>
-          <div class="form-group">
-            <label id=ntitle>Number to Search :</label>
-            <input class="form-control" id="nInput" placeholder="default / max value 10">
-          </div>
-          <small id="mSmall" class="form-text text-muted">Month should be a integer in 1~12.</small>
-          <div class="form-group">
-            <label id=mtitle>Month :</label>
-            <input class="form-control" id="mInput" placeholder="default this month 1~12">
-          </div>
-        </form>
-        <!----------------------------------------------------->
-        <div id=btnDiv>
-          <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
-          <button type="button" class="btn btn-primary" id=queryBtn>Query</button>
-        </div>
+
+
       </div>
     </div>
 
@@ -116,7 +142,7 @@
 
     <!----------------------------------------------------->
     <!-- Result Card -->
-    <div class="card" id=card2 onclick="dashboard.card.closeNav()">
+    <div class="card" id=card2>
       <div class="card-body" id=card2body>
       </div>
     </div>

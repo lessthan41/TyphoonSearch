@@ -9,22 +9,53 @@ class CardView {
     this.resultTableExist = false;
     this.switchCondition = 'Sun';
     this.hoverEvent = null;
-    this.navOpen = false;
-    this.navClose = false;
+    this.agencyData = null;
+    this.typhoonInfo = null;
   }
 
-  init() {
+  init(get) {
+    this.typhoonInfo = get['info'];
+    this.agencyData = get;
+    delete this.agencyData.info;
     this.initTr();
-    this.initNav();
+    this.initCenter();
+    this.switchManaulCenter();
+  }
+
+  /* Everything in Center tab */
+  initCenter() {
+    console.log(this.agencyData);
+    for(var i in this.agencyData){
+      $('#AgentBtnDiv')
+        .append($('<button>')
+          .attr('class', 'btn btn-outline-primary')
+          .html(i)
+        )
+    }
+    console.log(this.typhoonInfo);
+    $('#tBodyCenter')
+    .append($('<tr>')
+      .append($('<td>')
+        .html(this.typhoonInfo['code'])
+      )
+      .append($('<td>')
+        .css('padding', '0.55rem')
+        .html(this.typhoonInfo['zh'])
+      )
+      .append($('<td>')
+        .css('width', '38%')
+        .html(this.typhoonInfo['en'])
+      )
+    );
   }
 
   /* Everything for Radius in position */
   trRadiusControl(value) {
     $('#slidebarvalue').html(value);
-    if ($('#tBody tr').length != 0) { // if table have row
-      // $('#tBody tr').find('td:last').html(value + 'km')
+    if ($('#tBodyManual tr').length != 0) { // if table have row
+      // $('#tBodyManual tr').find('td:last').html(value + 'km')
       $('#slidebar').val(value);
-      $('#tBody td:last div').html(value + 'km'); // changing last td(newest radius)
+      $('#tBodyManual td:last div').html(value + 'km'); // changing last td(newest radius)
     }
   }
 
@@ -37,8 +68,8 @@ class CardView {
 
   /* for Clear Btn */
   initTr() {
-    $('#tBody tr').remove();
-    $('#tBody')
+    $('#tBodyManual tr').remove();
+    $('#tBodyManual')
       .append($('<tr>')
         .append($('<td>')
           .html(this.tableRowCount)
@@ -80,15 +111,15 @@ class CardView {
     };
 
     this.tableRowCount++;
-    let lastLat = $('#tBody tr:last .latlonInput:first').val();
-    let lastLon = $('#tBody tr:last .latlonInput:last').val();
+    let lastLat = $('#tBodyManual tr:last .latlonInput:first').val();
+    let lastLon = $('#tBodyManual tr:last .latlonInput:last').val();
 
     if (lastLon == '' | lastLat == '') { // if Last tr is blank
       this.tableRowCount--;
       if (coor[0] == '' && coor[1] == '') { // if Add Row Return
         return;
       } else { // if mapOnClick add
-        $('#tBody tr:last').remove();
+        $('#tBodyManual tr:last').remove();
       }
     }
 
@@ -100,7 +131,7 @@ class CardView {
       coor[1] = '';
     }
 
-    $('#tBody')
+    $('#tBodyManual')
       .append($('<tr>')
         .append($('<td>')
           .html(this.tableRowCount)
@@ -137,13 +168,13 @@ class CardView {
 
   rmTr() {
     if (this.tableRowCount == 1) {
-      $('#tBody tr:last .latlonInput:first').val('');
-      $('#tBody tr:last .latlonInput:last').val('');
+      $('#tBodyManual tr:last .latlonInput:first').val('');
+      $('#tBodyManual tr:last .latlonInput:last').val('');
       return;
     }
 
     this.tableRowCount--;
-    $('#tBody tr:last').remove();
+    $('#tBodyManual tr:last').remove();
   }
 
   /* Check if input format is good */
@@ -205,7 +236,7 @@ class CardView {
     $('#wSmall').css('visibility', 'hidden');
     $('#nSmall').css('visibility', 'hidden');
     $('#mSmall').css('visibility', 'hidden');
-    $('#card1').css('max-height', '430px');
+    $('#card1').css('max-height', '380px');
 
     this.trRadiusControl(50);
     this.hideWarning();
@@ -242,7 +273,6 @@ class CardView {
 
     $('#card2').css('overflow-y', 'scroll');
     $('#resultTbody tr').remove(); // Clear Table
-    console.log(123);
 
     for (var i in data) {
       $('#resultTbody')
@@ -334,8 +364,6 @@ class CardView {
     let addcutRowFontColor = sunOrMoon == 'Sun' ? '#6c757d' : '#d8d8d8';
     let addcutRowFontHover = '#ffffff';
     let addcutRowBorderColor = sunOrMoon == 'Sun' ? '#848f98' : '#d8d8d8';
-    let navIcon = sunOrMoon == 'Sun' ? '#003c8880' : '#ffffff99';
-    let sidenav = sunOrMoon == 'Sun' ? '#eaeaea' : '#bbbbbb';
     this.btnSwitch(sunOrMoon);
     $('.card').css('background-color', cardColor);
     $('.spinner-grow').css('color', spinColor);
@@ -354,45 +382,19 @@ class CardView {
     }).mouseout(function() {
       $(this).css('color', addcutRowFontColor);
     });
-    $('#navicon').css('color', navIcon);
-    $('.sidenav').css('background-color', sidenav);
   }
 
-  /* Side Nav */
-  initNav() {
-    $('#navicon').on("mouseover", () => {
-      setTimeout(() => {
-        this.openNav();
-      }, 150);
+  /* For Switch Manual & Center */
+  switchManaulCenter() {
+    $('#Center-tab').on('click', () => {
+      setTimeout(function(){
+        $('#forMoveDiv').insertAfter('#typhoonTableDiv');
+      }, 100);
     });
-
-    $('#mySidenav').on("mouseleave", () => {
-      setTimeout(() => {
-        this.closeNav();
-      }, 150);
+    $('#Manual-tab').on('click', () => {
+      setTimeout(function(){
+        $('#forMoveDiv').insertAfter('#undertable');
+      }, 100);
     });
   }
-
-  openNav() {
-    if (this.navClose == true) {
-      return;
-    }
-    this.navOpen = true;
-    document.getElementById('mySidenav').style.width = '250px';
-    setTimeout(() => {
-      this.navOpen = false;
-    }, 200);
-  }
-
-  closeNav() {
-    if (this.navOpen == true) {
-      return;
-    }
-    this.navClose = true;
-    document.getElementById('mySidenav').style.width = '0px';
-    setTimeout(() => {
-      this.navClose = false;
-    }, 200);
-  }
-
 }

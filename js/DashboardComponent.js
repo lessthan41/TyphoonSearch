@@ -14,16 +14,19 @@ class DashboardComponent {
   }
 
   init() {
-    this.mapInit();
-    this.cardInit();
-    this.latlonOnChange();
-    this.addRowBtnOnClick();
-    this.cutRowBtnOnClick();
-    this.clearBtnOnClick();
-    this.slideBarOnInput();
-    this.mapOnClick();
-    this.queryOnClick();
-    this.switchOnClick();
+    this.query.get()
+      .done((get) => {
+        this.mapInit();
+        this.cardInit(get);
+        this.latlonOnChange();
+        this.addRowBtnOnClick();
+        this.cutRowBtnOnClick();
+        this.clearBtnOnClick();
+        this.slideBarOnInput();
+        this.mapOnClick();
+        this.queryOnClick();
+        this.switchOnClick();
+      });
   }
 
   /* init */
@@ -31,8 +34,8 @@ class DashboardComponent {
     this.map.init();
   }
 
-  cardInit() {
-    this.card.init();
+  cardInit(get) {
+    this.card.init(get);
   }
 
   /* ClearBtn Onclick */
@@ -53,8 +56,8 @@ class DashboardComponent {
   slideBarOnInput() {
     $('#slidebar').on('input', () => {
       let currentValue;
-      let lastLat = $('#tBody tr:last .latlonInput:first').val();
-      let lastLon = $('#tBody tr:last .latlonInput:last').val();
+      let lastLat = $('#tBodyManual tr:last .latlonInput:first').val();
+      let lastLon = $('#tBodyManual tr:last .latlonInput:last').val();
       currentValue = $('#slidebar').val();
 
       if (lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)) {
@@ -69,7 +72,7 @@ class DashboardComponent {
   /* latlon OnChange */
   latlonOnChange() {
 
-    let elem = $('#tBody tr:last');
+    let elem = $('#tBodyManual tr:last');
 
     elem.on('change', () => {
 
@@ -92,7 +95,7 @@ class DashboardComponent {
           // Deal with Radius
           if (order == this.card.tableRowCount) { // Last Tr
             this.map.activeRadiusContainer = radius;
-            this.map.fixRadiusContainer.push(parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()) * 1000);
+            this.map.fixRadiusContainer.push(parseInt($('#tBodyManual tr:nth-last-of-type(2) td:last').text()) * 1000);
           } else {
             this.map.fixRadiusContainer.splice(order - 1, 0, radius)
           }
@@ -142,7 +145,7 @@ class DashboardComponent {
           return;
         };
         if(this.rowsHavePointOnMap.length != this.card.tableRowCount){ // All latloninput OK then Add
-          if($('#tBody tr:last .latlonInput:first').val() != '' | $('#tBody tr:last .latlonInput:last').val() != '') {
+          if($('#tBodyManual tr:last .latlonInput:first').val() != '' | $('#tBodyManual tr:last .latlonInput:last').val() != '') {
               return;
           }
         }
@@ -182,8 +185,8 @@ class DashboardComponent {
   /* Cutrow Btn Onclick */
   cutRowBtnOnClick() {
     $('#cutRowBtn').on('click', () => {
-      let lastLat = $('#tBody tr:last .latlonInput:first').val();
-      let lastLon = $('#tBody tr:last .latlonInput:last').val();
+      let lastLat = $('#tBodyManual tr:last .latlonInput:first').val();
+      let lastLon = $('#tBodyManual tr:last .latlonInput:last').val();
       this.mapHaveClicked = this.card.tableRowCount == 1 ? false : true;
 
       this.card.rmTr();
@@ -193,9 +196,9 @@ class DashboardComponent {
       if (this.card.tableRowCount == 1) {
         this.card.slidebarMinValueControl(true, 1);
       } else {
-        this.card.slidebarMinValueControl(true, parseInt($('#tBody tr:nth-last-of-type(2) td:last').text()));
+        this.card.slidebarMinValueControl(true, parseInt($('#tBodyManual tr:nth-last-of-type(2) td:last').text()));
       }
-      this.card.trRadiusControl(parseInt($('#tBody td:last').text()));
+      this.card.trRadiusControl(parseInt($('#tBodyManual td:last').text()));
 
       // if both match number then delete from this.map.coorContainer & this.rowsHavePointOnMap
       if (lastLat.match(/^[0-9]+.[0-9]+$/) | lastLat.match(/^[0-9]+$/)) {

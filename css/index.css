@@ -1,5 +1,18 @@
+
+@font-face {
+    font-family: custom-sans-serif;
+    src: local('Microsoft JhengHei');
+    unicode-range: U+4E00-9FFF;
+}
+
+@font-face {
+    font-family: custom-sans-serif;
+    src: local('Arial');
+    unicode-range: U+00-024F;
+}
+
 body {
-  font-family: 'Muli', sans-serif;
+  font-family: custom-sans-serif;
   font-size: 14px;
   line-height: 16px;
 }
@@ -10,7 +23,7 @@ body {
   width: 100vw;
 }
 
-/* ---------------------------------------------------- */
+/* ==================================================== */
 /* Onload */
 #drawBgcolor {
   position: fixed;
@@ -39,96 +52,7 @@ body {
   z-index: 6;
 }
 
-/* ---------------------------------------------------- */
-/* Side Navbar */
-#navicon {
-  position: fixed;
-  margin-left: 44px;
-  margin-top: 10px;
-  z-index: 2;
-  color: rgba(0, 60, 136, .5);
-  border-style: solid;
-  padding: 10px;
-  padding-left: 12px;
-  padding-right: 12px;
-}
-
-#navicon i {
-  font-size: 20px;
-}
-
-#navicon:hover {
-  background-color: rgba(0, 60, 136, .3);
-  transition: .25s;
-}
-
-/* The side navigation menu */
-.sidenav {
-  height: 100%;
-  width: 0;
-  /* 0 width - change this with JavaScript */
-  position: fixed;
-  z-index: 3;
-  top: 0;
-  /* Stay at the top */
-  left: 0;
-  background-color: #eaeaea;
-  overflow-x: hidden;
-  /* Disable horizontal scroll */
-  padding-top: 60px;
-  transition: .75s;
-  box-shadow: 1px 1px 4px #adb1a9
-}
-
-/* The navigation menu links */
-.sidenav a {
-  width: fit-content;
-  margin: auto;
-  padding: 13px 0px 13px 0px;
-  text-decoration: none;
-  font-size: 22px;
-  font-weight: bold;
-  color: #6d6363;
-  display: block;
-  transition: 0.3s;
-}
-
-/* When you mouse over the navigation links, change their color */
-.sidenav a:hover {
-  color: #cbcfd0;
-}
-
-#fish {
-  top: 10px;
-  text-align: center;
-  font-size: xx-large;
-  margin-bottom: 30px;
-}
-
-.fa-search {
-  border-style: solid;
-  padding: 7px;
-  border-color: #3b4249;
-  color: #3b4249;
-  border-width: 5px;
-}
-
-#main {
-  transition: margin-left .5s;
-  padding: 20px;
-}
-
-@media screen and (max-height: 450px) {
-  .sidenav {
-    padding-top: 15px;
-  }
-
-  .sidenav a {
-    font-size: 18px;
-  }
-}
-
-/* ---------------------------------------------------- */
+/* ==================================================== */
 /* Map */
 #map {
   height: 100vh;
@@ -136,7 +60,7 @@ body {
   z-index: 1;
 }
 
-/* ---------------------------------------------------- */
+/* ==================================================== */
 /* Right */
 #switchBtn, #card1 {
   position: absolute;
@@ -162,7 +86,7 @@ body {
   box-shadow: 0.5px 0.5px 10px #ffffff;
 }
 
-/* ---------------------------------------------------- */
+/* ==================================================== */
 /* Left */
 #detail {
   position: absolute;
@@ -176,16 +100,16 @@ body {
   left: 90px;
 }
 
-/* ---------------------------------------------------- */
+/* ==================================================== */
 /* Card1 */
 #card1 {
   margin: 10px 1px 0px 0px;
   padding-bottom: 0px;
   width: 400px;
-  /* clear: both; */
   float: right;
   box-shadow: 1px 1px 5px #728e97;
-  max-height: 414px;
+  height: 380px;
+  max-height: 380px;
   overflow-y: scroll;
   transition: .3s ease-in-out;
   z-index: 4;
@@ -196,12 +120,12 @@ body {
 #card2 {
   position: fixed;
   right: 10px;
-  top: 440px;
+  top: 400px;
   visibility: hidden;
   box-shadow: 1px 1px 5px #728e97;
   width: 0px;
   height: 10px;
-  max-height: 29.5%;
+  max-height: 280px;
   overflow-x: hidden;
   padding: 0.75rem 0.5rem 0.75rem 0.5rem;
   transition: .3s ease-in-out;
@@ -222,7 +146,7 @@ body {
     text-decoration .25s ease-in-out;
 }
 
-/* ---------------------------------------------------- */
+/* ==================================================== */
 /* Scroll bar */
 ::-webkit-scrollbar {
   width: 7px;
@@ -247,10 +171,12 @@ body {
 }
 
 #slidebartext {
+  margin-top: 10px;
   margin-bottom: 5px;
 }
 
-/* ---------------------------------------------------- */
+/* ==================================================== */
+/* Manual */
 /* Table */
 .tablediv {
   text-align: center;
@@ -356,4 +282,17 @@ td ::-webkit-input-placeholder {
 #clearBtn {
   margin-right: 5px;
   width: 69.58px;
+}
+
+/* ==================================================== */
+/* Center */
+#AgentBtnDiv {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+  text-align: center;
+}
+#AgentBtnDiv button {
+  padding: 0px 4px 0px 4px;
+  margin-right: 7px;
 }
