@@ -113,7 +113,7 @@ class MapComponent {
       ],
       view: new ol.View({ // setView
         center: ol.proj.fromLonLat([125.9, 22.5]),
-        zoom: 7
+        zoom: 6
       })
     });
   }
@@ -152,16 +152,16 @@ class MapComponent {
   }
 
   /* coor from EPSG:3857 to 4326 (latlon to TM2) */
-  LatLontoTM2(coor) {
+  LonLattoTM2(coor) {
     return ol.proj.transform(coor, 'EPSG:4326', 'EPSG:3857');
   }
 
   /* coor from EPSG:4326 to 3857 (TM2 to latlon) */
-  TM2toLatLon(coor) {
+  TM2toLonLat(coor) {
     return ol.proj.transform(coor, 'EPSG:3857', 'EPSG:4326');
   }
 
-  /* Add Point */
+  /* Add Point [Lon, Lat] */
   addPoint(coor) {
     let featurePoints = new Array();
     let style = this.switchCondition == 'Sun' ? this.pointStyle1 : this.pointStyle2;

@@ -7,31 +7,38 @@ class CardView {
     this.slideBarValue = 50; // radius slidebar start from 50km
     this.tableRowCount = 1;
     this.resultTableExist = false;
-    this.switchCondition = 'Sun';
+    this.sunOrMoon = 'Sun';
     this.hoverEvent = null;
-    this.agencyData = null;
+    this.centerData = null;
     this.typhoonInfo = null;
   }
 
   init(get) {
     this.typhoonInfo = get['info'];
-    this.agencyData = get;
-    delete this.agencyData.info;
+    this.centerData = get;
+    delete this.centerData.info;
     this.initTr();
     this.initCenter();
-    this.switchManaulCenter();
   }
 
   /* Everything in Center tab */
   initCenter() {
-    console.log(this.agencyData);
-    for(var i in this.agencyData){
-      $('#AgentBtnDiv')
+    console.log(this.centerData);
+    for(var i in this.centerData){
+      $('#CenterBtnDiv')
         .append($('<button>')
           .attr('class', 'btn btn-outline-primary')
           .html(i)
         )
     }
+
+    $('#CenterBtnDiv button:first').addClass('active');
+
+    $('#CenterBtnDiv button').on('click', function () {
+      $('#CenterBtnDiv button').removeClass('active');
+      $(this).addClass('active');
+    });
+
     console.log(this.typhoonInfo);
     $('#tBodyCenter')
     .append($('<tr>')
@@ -40,7 +47,11 @@ class CardView {
       )
       .append($('<td>')
         .css('padding', '0.55rem')
-        .html(this.typhoonInfo['zh'])
+        .append($('<a>')
+          .attr('href', this.typhoonInfo['links'])
+          .attr('target', '_blank')
+          .html(this.typhoonInfo['zh'])
+        )
       )
       .append($('<td>')
         .css('width', '38%')
@@ -255,7 +266,7 @@ class CardView {
   /* Query Onclick Show Result Card */
   showResultCard(data) {
 
-    let tableColor = this.switchCondition == 'Sun' ?
+    let tableColor = this.sunOrMoon == 'Sun' ?
       $('<table>').attr('class', 'table').attr('id', 'resultTable') :
       $('<table>').attr('class', 'table').attr('id', 'resultTable').css('color', 'white');
     this.expandResultCard();
@@ -334,6 +345,7 @@ class CardView {
     setTimeout(() => {
       $('#drawBgcolor').css('display', 'none');
       $('.spinner-grow').css('display', 'none');
+      $('#loadingWord').css('display', 'none');
     }, 800);
   }
 
@@ -354,7 +366,7 @@ class CardView {
 
   /* CSS View Change between Sun and Moon */
   SunMoon(sunOrMoon) {
-    this.switchCondition = sunOrMoon;
+    this.sunOrMoon = sunOrMoon;
     let onloadColor = sunOrMoon == 'Sun' ? '#fcfcfca1' : '#00000098';
     let cardColor = sunOrMoon == 'Sun' ? 'white' : '#4c4c4c';
     let spinColor = sunOrMoon == 'Sun' ? 'black' : 'white';
@@ -384,17 +396,4 @@ class CardView {
     });
   }
 
-  /* For Switch Manual & Center */
-  switchManaulCenter() {
-    $('#Center-tab').on('click', () => {
-      setTimeout(function(){
-        $('#forMoveDiv').insertAfter('#typhoonTableDiv');
-      }, 100);
-    });
-    $('#Manual-tab').on('click', () => {
-      setTimeout(function(){
-        $('#forMoveDiv').insertAfter('#undertable');
-      }, 100);
-    });
-  }
 }

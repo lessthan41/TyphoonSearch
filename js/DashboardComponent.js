@@ -8,15 +8,17 @@ class DashboardComponent {
     this.card = new CardView();
     this.query = new Request();
     this.mapHaveClicked = false; // for control Slidebar min
-    this.switchCondition = 'Sun';
+    this.sunOrMoon = 'Sun';
+    this.centerOrMaual = 'Center';
     this.resultHoverEvent = null;
     this.rowsHavePointOnMap = new Array(); // Remember which rows' lonlat have point on Map for delete
   }
 
   init() {
+    this.mapInit();
     this.query.get()
       .done((get) => {
-        this.mapInit();
+        this.getReady();
         this.cardInit(get);
         this.latlonOnChange();
         this.addRowBtnOnClick();
@@ -26,7 +28,19 @@ class DashboardComponent {
         this.mapOnClick();
         this.queryOnClick();
         this.switchOnClick();
+        this.switchManaulCenter();
+        this.centerBtnOnClick();
+        this.centerBtnPlot();
       });
+  }
+
+  /* DisOnload */
+  getReady () {
+    setTimeout(() => {
+      $('#loadingWord').css('opacity', '0');
+      $('#loadingWord').css('margin-top', '39vh');
+      this.card.disOnload();
+    }, 1000);
   }
 
   /* init */
@@ -40,16 +54,24 @@ class DashboardComponent {
 
   /* ClearBtn Onclick */
   clearBtnOnClick() {
-    let initial = 50;
     $('#clearBtn').on('click', () => {
-      this.mapHaveClicked = false;
-      this.rowsHavePointOnMap = [];
-      this.map.removeMarker();
-      this.card.removeRecord(initial);
-      this.latlonOnChange();
-      this.map.radiusController(initial);
-      this.card.hideResultCard();
+      this.removeRecord();
+      if(this.centerOrMaual == 'Center') {
+        this.centerBtnPlot();
+      }
     })
+  }
+
+  /* Remove Record */
+  removeRecord() {
+    let initial = 50;
+    this.mapHaveClicked = false;
+    this.rowsHavePointOnMap = [];
+    this.map.removeMarker();
+    this.card.removeRecord(initial);
+    this.latlonOnChange();
+    this.map.radiusController(initial);
+    this.card.hideResultCard();
   }
 
   /* Slidebar Oninput */
@@ -86,7 +108,7 @@ class DashboardComponent {
       if (this.card.checkLatLonInput(lat, lon)) {
 
         console.log('Draw!!');
-        coor = this.map.LatLontoTM2([parseFloat(lon.val()), parseFloat(lat.val())]);
+        coor = this.map.LonLattoTM2([parseFloat(lon.val()), parseFloat(lat.val())]);
 
         if ($.inArray(order, this.rowsHavePointOnMap) == -1) { // New Point
           this.rowsHavePointOnMap.splice(order - 1, 0, order); // Add
@@ -134,6 +156,9 @@ class DashboardComponent {
 
         coor = this.map.getMousePosition();
 
+        if (this.centerOrMaual == 'Center') {
+          return;
+        }
         if (evt.dragging) { // Dragging event Return
           return;
         }
@@ -159,7 +184,7 @@ class DashboardComponent {
 
         this.map.activeRadiusContainer = parseInt($('#slidebarvalue').text()) * 1000;
         this.map.addMarker();
-        coor = this.map.TM2toLatLon(coor); // coor transform
+        coor = this.map.TM2toLonLat(coor); // coor transform
         this.card.addTr(coor);
         this.latlonOnChange(); // Add Onchange Event
         this.card.slidebarMinValueControl(this.mapHaveClicked, $('#slidebar').val());
@@ -220,64 +245,91 @@ class DashboardComponent {
 
   /* Query Btn Onclick */
   queryOnClick() {
-    let toPOST, coor, radius, toGET, data;
-    $('#queryBtn').on('click', () => {
-      if (this.map.coorContainer.length == 0) { // Null Coordinate Return
-        return;
-      };
-      if (this.query.postCheck()) {
-        this.card.onload();
-        coor = this.map.coorContainer;
-        radius = this.map.fixRadiusContainer.slice(); // Reference Problem
-        radius.push(this.map.activeRadiusContainer);
-        toPOST = this.query.wrap(coor, radius);
-        toPOST = JSON.stringify(toPOST);
 
-        this.query.get('/route_sorting', toPOST)
-          .done(() => { // GET Success
-            console.log('GET success');
-            console.log(this.query.getData);
-            this.map.plotData(this.query.getData);
-            setTimeout(() => {
-              this.card.disOnload();
-              this.card.showResultCard(this.query.getData);
-              this.resultOnHover(this.switchCondition);
-            }, 1000);
-            return;
-          })
-          .fail(() => { // GET Failed
-            setTimeout(() => {
-              console.log('GET failed');
-              alert('Query Abort, Please Try Again');
-              this.card.disOnload();
-            }, 100);
-          });
+    $('#queryBtn').on('click', () => {
+      let toPOST;
+      if(this.centerOrMaual == 'Center') {
+        let indx = $('#CenterBtnDiv .active').text();
+        let points = new Object();
+        let data = new Object();
+
+        Object.assign(data, this.card.centerData[indx]);
+
+        for (var i in data['points']) {
+          points[i] = {
+            'longitude': data['points'][i]['longitude'],
+            'latitude': data['points'][i]['latitude'],
+            'radius': data['points'][i]['radius']
+          };
+        }
+
+        let parameter = {
+          'w': data['parameter']['w'],
+          'month': data['parameter']['month'],
+          'n': data['parameter']['n']
+        };
+        toPOST = {points, parameter};
+        this.card.onload();
+
+      } else {
+        if (this.map.coorContainer.length == 0) { // Null Coordinate Return
+          return;
+        }
+        if (this.query.postCheck()) {
+          this.card.onload();
+          let coor, radius, toGET, data;
+          coor = this.map.coorContainer;
+          radius = this.map.fixRadiusContainer.slice(); // Reference Problem
+          radius.push(this.map.activeRadiusContainer);
+          toPOST = this.query.wrap(coor, radius);
+        }
       }
+      toPOST = JSON.stringify(toPOST);
+      console.log(toPOST);
+      this.query.get('/route_sorting', toPOST)
+        .done(() => { // GET Success
+          console.log('GET success');
+          console.log(this.query.getData);
+          this.map.plotData(this.query.getData);
+          setTimeout(() => {
+            this.card.disOnload();
+            this.card.showResultCard(this.query.getData);
+            this.resultOnHover(this.sunOrMoon);
+          }, 1000);
+          return;
+        })
+        .fail(() => { // GET Failed
+          setTimeout(() => {
+            console.log('GET failed');
+            alert('Query Abort, Please Try Again');
+            this.card.disOnload();
+          }, 100);
+        });
     });
   }
 
   /* Switch Btn Onclick */
   switchOnClick() {
     $('#switchBtn').on('click', () => {
-      if (this.switchCondition == 'Sun') {
+      if (this.sunOrMoon == 'Sun') {
         this.card.SunMoon('Moon');
         this.map.tileSwitch('Moon');
         this.resultOnHover('Moon');
-        this.switchCondition = 'Moon';
-      } else if (this.switchCondition == 'Moon') {
+        this.sunOrMoon = 'Moon';
+      } else if (this.sunOrMoon == 'Moon') {
         this.card.SunMoon('Sun');
         this.map.tileSwitch('Sun');
         this.resultOnHover('Sun');
-        this.switchCondition = 'Sun';
+        this.sunOrMoon = 'Sun';
       };
     });
   }
 
   /* Result Card Onhover */
-  resultOnHover(switchCondition) {
+  resultOnHover(sunOrMoon) {
     let resultHoverEvent;
-    let hoverColor = switchCondition == 'Sun' ? '#e1f4de' : '#8c8c8c';
-    let returnColor = switchCondition == 'Sun' ? 'white' : '#4c4c4c';
+    let hoverColor = sunOrMoon == 'Sun' ? '#e1f4de' : '#8c8c8c';
+    let returnColor = sunOrMoon == 'Sun' ? 'white' : '#4c4c4c';
 
     /* Control CSS & Store Data */
     $('#resultTbody tr').hover(function() {
@@ -299,4 +351,60 @@ class DashboardComponent {
 
   }
 
+  /* For Switch Manual & Center */
+  switchManaulCenter() {
+    $('#Center-tab').on('click', () => {
+      setTimeout(() => {
+        $('#forMoveDiv').insertAfter('#typhoonTableDiv');
+        this.removeRecord();
+        this.centerOrMaual = 'Center';
+        this.centerBtnPlot();
+      }, 100);
+    });
+    $('#Manual-tab').on('click', () => {
+      setTimeout(() => {
+        $('#forMoveDiv').insertAfter('#undertable');
+        this.removeRecord();
+        this.centerOrMaual = 'Manual';
+        this.map.removeMarker();
+      }, 100);
+    });
+  }
+
+  /* Center Btn Onclick Plot on Map */
+  centerBtnOnClick () {
+
+    $('#CenterBtnDiv button').on('click', () => {
+      this.centerBtnPlot();
+    });
+
+  }
+
+  /* Center Btn Plot Function */
+  centerBtnPlot () {
+    let radius, justForPlot = true;
+    let fixRadius = new Array();
+    let coor = new Array();
+    let data = new Object();
+    let i, j;
+
+    Object.assign(data, this.card.centerData[$('#CenterBtnDiv .active').text()]['points']);
+
+    for (i=1; i<=Object.keys(data).length; i++) {
+      for (j in data) {
+        if (parseInt(j.substring(5)) == i) {
+          coor.push(this.map.LonLattoTM2([data[j]['longitude'], data[j]['latitude']]));
+          fixRadius.push(data[j]['radius']);
+        }
+      }
+    }
+
+    radius = fixRadius.pop();
+
+    this.map.coorContainer = coor.slice();
+    this.map.activeRadiusContainer = radius;
+    this.map.fixRadiusContainer = fixRadius.slice();
+
+    this.map.addMarker(justForPlot);
+  }
 }

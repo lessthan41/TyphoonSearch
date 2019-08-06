@@ -30,8 +30,7 @@ body {
   width: 100vw;
   height: 100vh;
   background-color: #fcfcfca1;
-  opacity: 0;
-  display: none;
+  opacity: 1;
   transition: opacity .8s ease-in-out;
   z-index: 5;
 }
@@ -47,9 +46,28 @@ body {
   bottom: 0;
   width: 4rem;
   height: 4rem;
-  display: none;
   transition: .8s ease-in-out;
   z-index: 6;
+}
+
+#loadingWord{
+  display: none;
+  z-index: 5;
+  position: fixed;
+  color: #4f4e4e;
+  width: 200px;
+  height: 50px;
+  font-size: x-large;
+  font-weight: 600;
+  text-align: center;
+  line-height: 47px;
+  margin: auto;
+  left: 0;
+  right: 0;
+  margin-top: 39vh;
+  opacity: 0;
+  display: unset;
+  transition: .5s ease-in-out;
 }
 
 /* ==================================================== */
@@ -286,13 +304,13 @@ td ::-webkit-input-placeholder {
 
 /* ==================================================== */
 /* Center */
-#AgentBtnDiv {
+#CenterBtnDiv {
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 5px;
   text-align: center;
 }
-#AgentBtnDiv button {
+#CenterBtnDiv button {
   padding: 0px 4px 0px 4px;
   margin-right: 7px;
 }
