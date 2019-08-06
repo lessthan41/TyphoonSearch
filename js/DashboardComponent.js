@@ -10,7 +10,6 @@ class DashboardComponent {
     this.mapHaveClicked = false; // for control Slidebar min
     this.sunOrMoon = 'Sun';
     this.centerOrMaual = 'Center';
-    this.resultHoverEvent = null;
     this.rowsHavePointOnMap = new Array(); // Remember which rows' lonlat have point on Map for delete
   }
 

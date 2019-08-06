@@ -8,22 +8,22 @@ class CardView {
     this.tableRowCount = 1;
     this.resultTableExist = false;
     this.sunOrMoon = 'Sun';
-    this.hoverEvent = null;
     this.centerData = null;
     this.typhoonInfo = null;
   }
 
   init(get) {
-    this.typhoonInfo = get['info'];
+    this.typhoonInfo = get.info;
+    delete get.info;
+    for (let i in get) { get[i]['parameter']['n'] = 10; }
     this.centerData = get;
-    delete this.centerData.info;
     this.initTr();
-    this.initCenter();
+    this.initCenterBtn();
+    this.initCenterTr();
   }
 
-  /* Everything in Center tab */
-  initCenter() {
-    console.log(this.centerData);
+  /* Init Center Btn Div */
+  initCenterBtn () {
     for(var i in this.centerData){
       $('#CenterBtnDiv')
         .append($('<button>')
@@ -38,8 +38,11 @@ class CardView {
       $('#CenterBtnDiv button').removeClass('active');
       $(this).addClass('active');
     });
+  }
 
-    console.log(this.typhoonInfo);
+  /* Everything in Center tab */
+  initCenterTr () {
+
     $('#tBodyCenter')
     .append($('<tr>')
       .append($('<td>')
@@ -64,7 +67,6 @@ class CardView {
   trRadiusControl(value) {
     $('#slidebarvalue').html(value);
     if ($('#tBodyManual tr').length != 0) { // if table have row
-      // $('#tBodyManual tr').find('td:last').html(value + 'km')
       $('#slidebar').val(value);
       $('#tBodyManual td:last div').html(value + 'km'); // changing last td(newest radius)
     }
