@@ -29,7 +29,7 @@
     </div>
 
     <!-- map -->
-    <div id="map"></div>
+    <div id="map" onclick="dashboard.mapOnClick()"></div>
 
     <!-- Query Card -->
     <div class="card" id=card1>
@@ -37,10 +37,10 @@
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" id="Center-tab" data-toggle="tab" href="#Center" role="tab" aria-controls="Center" aria-selected="true">Center</a>
+            <a class="nav-link active" id="Center-tab" data-toggle="tab" href="#Center" role="tab" aria-controls="Center" aria-selected="true" onclick="dashboard.centerOnClick()">Center</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="Manual-tab" data-toggle="tab" href="#Manual" role="tab" aria-controls="Manual" aria-selected="false">Manual</a>
+            <a class="nav-link" id="Manual-tab" data-toggle="tab" href="#Manual" role="tab" aria-controls="Manual" aria-selected="false" onclick="dashboard.manaulOnClick()">Manual</a>
           </li>
         </ul>
 
@@ -77,8 +77,8 @@
                 </form>
                 <!----------------------------------------------------->
                 <div id=btnDiv>
-                  <button type="button" class="btn btn-success" id=clearBtn>Clear</button>
-                  <button type="button" class="btn btn-primary" id=queryBtn>Query</button>
+                  <button type="button" class="btn btn-success" id=clearBtn onclick="dashboard.clearBtnOnClick()">Clear</button>
+                  <button type="button" class="btn btn-primary" id=queryBtn onclick="dashboard.queryBtnOnClick()">Query</button>
                 </div>
               </div>
             </div>
@@ -90,7 +90,7 @@
             <div id=manualCard>
               <div class="Sliderdiv">
                 <div id=slidebartext>Buffer Radius : <span id=slidebarvalue>50</span> km</div>
-                <input type="range" class="custom-range" min="1" max="300" value="50" id="slidebar">
+                <input type="range" class="custom-range" min="1" max="300" value="50" id="slidebar" oninput="dashboard.slideBarOnInput()">
               </div>
               <!----------------------------------------------------->
               <div class="tablediv" id=latlonTableDiv>
@@ -112,12 +112,12 @@
                 </div>
                 <div class="trBtnDiv">
                   <div id=cutRowBtnDiv>
-                    <button type="button" class="btn btn-outline-secondary" id=cutRowBtn>
+                    <button type="button" class="btn btn-outline-secondary" id=cutRowBtn onclick="dashboard.cutRowBtnOnClick()">
                       <i class="fas fa-minus"></i> Cut row
                     </button>
                   </div>
                   <div id=addRowBtnDiv>
-                    <button type="button" class="btn btn-outline-secondary" id=addRowBtn>
+                    <button type="button" class="btn btn-outline-secondary" id=addRowBtn  onclick="dashboard.addRowBtnOnClick()">
                       <i class="fas fa-plus"></i> Add row
                     </button>
                   </div>
@@ -135,7 +135,7 @@
     </div>
 
     <!-- Switch Btn -->
-    <button type="button" class="btn btn-default btn-circle btn-lg" id="switchBtn" style="background-color: #3b5998;">
+    <button type="button" class="btn btn-default btn-circle btn-lg" id="switchBtn" style="background-color: #3b5998;" onclick="dashboard.switchOnClick()">
       <i class="fas fa-sun" style="display: none;"></i>
       <i class="fas fa-moon"></i>
     </button>

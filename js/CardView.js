@@ -22,10 +22,8 @@ class CardView {
         get[i][center]['parameter']['n'] = 10;
       }
     }
-    console.log(this.typhoonInfo);
 
     this.centerData = get;
-    console.log(this.centerData);
 
     this.initTr();
     this.initCenterBtn();
