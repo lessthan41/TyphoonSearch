@@ -1,11 +1,11 @@
 /**
- * Init Dashboard Component
- * Component Event Handler
+ * Request Functions
+ *
  */
 class Request {
   constructor() {
     this.getData = null;
-    this.GET_request = null;
+    // this.GET_request = null;
   }
 
   /* get data via ajax */
@@ -15,14 +15,17 @@ class Request {
       url = url + '?toPOST=' + toPOST
     }
 
-    this.GET_request = $.ajax({ // return to use done
+    // this.GET_request =
+
+    return $.ajax({ // return to use done
         method: "GET",
         url: url
       })
       .done((get) => {
         this.getData = get;
       });
-    return this.GET_request;
+     // this.GET_request;
+
   }
 
   /* LonLat to LatLon, to JSON */

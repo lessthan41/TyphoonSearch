@@ -1,14 +1,13 @@
-
 @font-face {
-    font-family: custom-sans-serif;
-    src: local('Microsoft JhengHei');
-    unicode-range: U+4E00-9FFF;
+  font-family: custom-sans-serif;
+  src: local('Microsoft JhengHei');
+  unicode-range: U+4E00-9FFF;
 }
 
 @font-face {
-    font-family: custom-sans-serif;
-    src: local('Arial');
-    unicode-range: U+00-024F;
+  font-family: custom-sans-serif;
+  src: local('Arial');
+  unicode-range: U+00-024F;
 }
 
 body {
@@ -21,6 +20,14 @@ body {
   display: flex;
   height: 100vh;
   width: 100vw;
+}
+
+.table a {
+  color: #3936a9;
+}
+
+.table a:hover {
+  text-decoration: none;
 }
 
 /* ==================================================== */
@@ -50,7 +57,7 @@ body {
   z-index: 6;
 }
 
-#loadingWord{
+#loadingWord {
   display: none;
   z-index: 5;
   position: fixed;
@@ -148,20 +155,6 @@ body {
   padding: 0.75rem 0.5rem 0.75rem 0.5rem;
   transition: .3s ease-in-out;
   z-index: 4;
-}
-
-#card2 a {
-  color: #3936a9;
-}
-
-#card2 a:hover {
-  color: #524ed5;
-  text-decoration: blink;
-  transition: color .25s ease-in-out,
-    background-color .25s ease-in-out,
-    border-color .25s ease-in-out,
-    box-shadow .25s ease-in-out,
-    text-decoration .25s ease-in-out;
 }
 
 /* ==================================================== */
@@ -304,13 +297,29 @@ td ::-webkit-input-placeholder {
 
 /* ==================================================== */
 /* Center */
+/* Btn */
 #CenterBtnDiv {
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 5px;
   text-align: center;
 }
+
 #CenterBtnDiv button {
   padding: 0px 4px 0px 4px;
   margin-right: 7px;
 }
+
+/* Table */
+#tBodyCenter tr {
+  transition: .2s ease-in-out;
+  cursor: pointer;
+}
+
+/* #tBodyCenter #selected {
+  background-color: #f0f0f0;
+} */
+
+/* #tBodyCenter #selected:hover {
+  background-color: #e4e4e4;
+} */

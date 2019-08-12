@@ -8,15 +8,25 @@ class CardView {
     this.tableRowCount = 1;
     this.resultTableExist = false;
     this.sunOrMoon = 'Sun';
-    this.centerData = null;
-    this.typhoonInfo = null;
+    this.centerData = new Object();
+    this.typhoonInfo = new Array();
   }
 
   init(get) {
-    this.typhoonInfo = get.info;
-    delete get.info;
-    for (let i in get) { get[i]['parameter']['n'] = 10; }
+
+    for (let i in get) {
+      this.typhoonInfo.push(get[i]['info']);
+      delete get[i]['info'];
+
+      for (let center in get[i]) {
+        get[i][center]['parameter']['n'] = 10;
+      }
+    }
+    console.log(this.typhoonInfo);
+
     this.centerData = get;
+    console.log(this.centerData);
+
     this.initTr();
     this.initCenterBtn();
     this.initCenterTr();
@@ -24,7 +34,9 @@ class CardView {
 
   /* Init Center Btn Div */
   initCenterBtn () {
-    for(var i in this.centerData){
+    let i, indx = Object.keys(this.centerData)[0];
+
+    for(i in this.centerData[indx]){
       $('#CenterBtnDiv')
         .append($('<button>')
           .attr('class', 'btn btn-outline-primary')
@@ -43,24 +55,34 @@ class CardView {
   /* Everything in Center tab */
   initCenterTr () {
 
-    $('#tBodyCenter')
-    .append($('<tr>')
-      .append($('<td>')
-        .html(this.typhoonInfo['code'])
-      )
-      .append($('<td>')
-        .css('padding', '0.55rem')
-        .append($('<a>')
-          .attr('href', this.typhoonInfo['links'])
-          .attr('target', '_blank')
-          .html(this.typhoonInfo['zh'])
+    $('#tBodyCenter tr').remove();
+
+    for (let i in this.typhoonInfo) {
+      $('#tBodyCenter')
+      .append($('<tr>').attr('onclick',
+      'dashboard.centerTrOnClick(this); dashboard.centerBtnPlot();')
+        .append($('<td>')
+          .html(this.typhoonInfo[i]['code'])
         )
-      )
-      .append($('<td>')
-        .css('width', '38%')
-        .html(this.typhoonInfo['en'])
-      )
-    );
+        .append($('<td>')
+          .css('padding', '0.55rem')
+          .append($('<a>')
+            .attr('href', this.typhoonInfo[i]['links'])
+            .attr('target', '_blank')
+            .html(this.typhoonInfo[i]['zh'])
+          )
+        )
+        .append($('<td>')
+          .css('width', '38%')
+          .html(this.typhoonInfo[i]['en'])
+        )
+      );
+    }
+
+    $('#tBodyCenter a').css('color', '#3936a9');
+    $('#tBodyCenter tr:first')
+      .attr('id', 'selected')
+      .css('background-color', '#f0f0f0');
   }
 
   /* Everything for Radius in position */
@@ -378,6 +400,14 @@ class CardView {
     let addcutRowFontColor = sunOrMoon == 'Sun' ? '#6c757d' : '#d8d8d8';
     let addcutRowFontHover = '#ffffff';
     let addcutRowBorderColor = sunOrMoon == 'Sun' ? '#848f98' : '#d8d8d8';
+    let aTagColor = sunOrMoon == 'Sun' ? '#3936a9' : '#70e075';
+    let navLinkColor = sunOrMoon == 'Sun' ? 'white !important' : '#afb9af !important';
+    let centerBtnToRemove = sunOrMoon == 'Sun' ? 'btn-outline-light' : 'btn-outline-primary';
+    let centerBtnToAdd = sunOrMoon == 'Sun' ? 'btn-outline-primary' : 'btn-outline-light';
+    let centerTr = sunOrMoon == 'Sun' ? 'white' : '#4c4c4c';
+    let selectedTr = sunOrMoon == 'Sun' ? '#f0f0f0' : '#696969';
+    let centerTrHover = sunOrMoon == 'Sun' ? '#e4e4e4' : '#777777';
+
     this.btnSwitch(sunOrMoon);
     $('.card').css('background-color', cardColor);
     $('.spinner-grow').css('color', spinColor);
@@ -389,13 +419,35 @@ class CardView {
     $('#drawBgcolor').css('background-color', onloadColor);
     $('#resultTbody tr').css('background-color', cardColor);
     $('.form-control').css('background-color', inputColor);
+    $('.table a').css('color', aTagColor);
+
     $('.btn-outline-secondary').css('color', addcutRowFontColor);
     $('.btn-outline-secondary').css('border-color', addcutRowBorderColor);
-    $('.btn-outline-secondary').mouseover(function() {
+    $('.btn-outline-secondary').hover(function() {
       $(this).css('color', addcutRowFontHover);
-    }).mouseout(function() {
+    }, function() {
       $(this).css('color', addcutRowFontColor);
     });
+
+    $('#CenterBtnDiv button').removeClass(centerBtnToRemove);
+    $('#CenterBtnDiv button').addClass(centerBtnToAdd);
+    $('.nav-tabs > li > a').css('background-color', navLinkColor);
+
+    $('#tBodyCenter tr').css('background-color', centerTr);
+    $('#tBodyCenter tr').hover( function() {
+      $(this).css('background-color', centerTrHover);
+    }, function () {
+      $(this).css('background-color', centerTr);
+    });
+
+    $('#tBodyCenter #selected').css('background-color', selectedTr);
+    $('#tBodyCenter #selected').hover( function() {
+      $(this).css('background-color', centerTrHover);
+    }, function () {
+      $(this).css('background-color', selectedTr);
+    });
+
+
   }
 
 }

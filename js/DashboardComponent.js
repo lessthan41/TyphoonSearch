@@ -13,10 +13,10 @@ class DashboardComponent {
     this.rowsHavePointOnMap = new Array(); // Remember which rows' lonlat have point on Map for delete
   }
 
-  init() {
+  init(get) {
     this.mapInit();
-    this.query.get()
-      .done((get) => {
+    // this.query.get()
+      // .done((get) => {
         this.getReady();
         this.cardInit(get);
         this.latlonOnChange();
@@ -30,7 +30,9 @@ class DashboardComponent {
         this.switchManaulCenter();
         this.centerBtnOnClick();
         this.centerBtnPlot();
-      });
+        this.centerTrHover();
+        this.centerBtnPlot();
+      // });
   }
 
   /* DisOnload */
@@ -55,22 +57,21 @@ class DashboardComponent {
   clearBtnOnClick() {
     $('#clearBtn').on('click', () => {
       this.removeRecord();
-      if(this.centerOrMaual == 'Center') {
-        this.centerBtnPlot();
-      }
     })
   }
 
   /* Remove Record */
   removeRecord() {
     let initial = 50;
-    this.mapHaveClicked = false;
-    this.rowsHavePointOnMap = [];
-    this.map.removeMarker();
     this.card.removeRecord(initial);
-    this.latlonOnChange();
-    this.map.radiusController(initial);
     this.card.hideResultCard();
+    if(this.centerOrMaual != 'Center') {
+      this.mapHaveClicked = false;
+      this.rowsHavePointOnMap = [];
+      this.map.removeMarker();
+      this.latlonOnChange();
+      this.map.radiusController(initial);
+    }
   }
 
   /* Slidebar Oninput */
@@ -86,6 +87,7 @@ class DashboardComponent {
           this.map.radiusController(currentValue);
         }
       }
+
       this.card.trRadiusControl(currentValue); // change slidebar display value
     });
   }
@@ -254,6 +256,10 @@ class DashboardComponent {
 
         Object.assign(data, this.card.centerData[indx]);
 
+        if (Object.keys(data['points']).length == 0) {
+          return;
+        }
+
         for (var i in data['points']) {
           points[i] = {
             'longitude': data['points'][i]['longitude'],
@@ -271,6 +277,7 @@ class DashboardComponent {
         this.card.onload();
 
       } else {
+
         if (this.map.coorContainer.length == 0) { // Null Coordinate Return
           return;
         }
@@ -281,7 +288,7 @@ class DashboardComponent {
           radius = this.map.fixRadiusContainer.slice(); // Reference Problem
           radius.push(this.map.activeRadiusContainer);
           toPOST = this.query.wrap(coor, radius);
-        }
+        } else { return; }
       }
       toPOST = JSON.stringify(toPOST);
       console.log(toPOST);
@@ -324,7 +331,7 @@ class DashboardComponent {
     });
   }
 
-  /* Result Card Onhover */
+  /* Result Card Onhover event */
   resultOnHover(sunOrMoon) {
     let resultHoverEvent;
     let hoverColor = sunOrMoon == 'Sun' ? '#e1f4de' : '#8c8c8c';
@@ -348,6 +355,43 @@ class DashboardComponent {
       this.map.addDataLine(this.map.lineDataCoor);
     });
 
+  }
+
+  /* Init Center Tab Tr Onhover Event */
+  centerTrHover() {
+
+    let hoverColor = this.sunOrMoon == 'Sun' ? '#e4e4e4' : '#777777';
+    let returnColor = this.sunOrMoon == 'Sun' ? 'white' : '#4c4c4c';
+    let selectedbgcolor = this.sunOrMoon == 'Sun' ? '#f0f0f0' : '#696969';
+
+    /* Control CSS & Store Data */
+    $('#tBodyCenter tr').hover(function() {
+      $(this).css('background-color', hoverColor);
+    }, function() {
+      $(this).css('background-color', returnColor);
+    });
+
+    $('#tBodyCenter #selected').hover(function() {
+      $(this).css('background-color', hoverColor);
+    }, function() {
+      $(this).css('background-color', selectedbgcolor);
+    });
+
+  }
+
+  /* When Center Tab Tr Onclick */
+  centerTrOnClick(self) {
+
+    let trcolor = this.sunOrMoon == 'Sun' ? 'white' : '#4c4c4c';
+    let selectedbgcolor = this.sunOrMoon == 'Sun' ? '#f0f0f0' : '#696969';
+
+    $('#tBodyCenter tr')
+      .removeAttr('id', 'selected')
+      .css('background-color', trcolor);
+    self.style.backgroundColor = selectedbgcolor;
+    self.id = 'selected';
+    this.centerTrHover();
+    this.centerBtnPlot();
   }
 
   /* For Switch Manual & Center */
@@ -385,10 +429,13 @@ class DashboardComponent {
     let fixRadius = new Array();
     let coor = new Array();
     let data = new Object();
+    let typhoon = $('#tBodyCenter #selected td:last').text();
+    let center = $('#CenterBtnDiv .active').text();
     let i, j;
 
-    Object.assign(data, this.card.centerData[$('#CenterBtnDiv .active').text()]['points']);
+    Object.assign(data, this.card.centerData[typhoon][center]['points']);
 
+    /* Adjust Order */
     for (i=1; i<=Object.keys(data).length; i++) {
       for (j in data) {
         if (parseInt(j.substring(5)) == i) {
